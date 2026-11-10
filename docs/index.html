@@ -39,6 +39,339 @@ content="width=device-width, initial-scale=1.0"
   <span class="next-name"></span>
 </nav>
 
+<!-- Work Environment -->
+<section id="work-environment" aria-labelledby="work-environment" data-item="Work Environment">
+<h2>
+<a href="#work-environment">Setting up your Work Environment</a>
+</h2>
+<p>You will need the following apps installed on your development
+computer in order to complete this tutorial. How you do this depends on
+your Operating System.</p>
+<details id="windows-details">
+<summary>
+Windows
+</summary>
+<h3 id="python-3">Python 3</h3>
+<p>You can <a href="https://www.python.org/downloads/">download
+Python</a> from the official website.</p>
+<figure>
+<img src="images/windowsStandalone.webp"
+alt="Choose the standalone installer" />
+<figcaption aria-hidden="true">Choose the standalone
+installer</figcaption>
+</figure>
+<p>Choose the standalone installer, because this gives you the option of
+checking the <code>Add python.exe to PATH</code> button before you click
+Install Now.</p>
+<figure>
+<img src="images/AddToPATH.webp"
+alt="Check the Add python.exe to PATH button" />
+<figcaption aria-hidden="true">Check the
+<code>Add python.exe to PATH</code> button</figcaption>
+</figure>
+<p>This is important, because it allows you to run Python from the
+command line.</p>
+<figure>
+<img src="images/pythonVersion.webp"
+alt="Checking that Python is available on the command line" />
+<figcaption aria-hidden="true">Checking that Python is available on the
+command line</figcaption>
+</figure>
+<h3 id="postgresql">PostgreSQL</h3>
+</details>
+<details id="mac-details">
+<summary>
+MacOS
+</summary>
+<h3 id="python">Python</h3>
+<p>You can <a href="https://www.python.org/downloads/">download
+Python</a> from the official website, or you can run:</p>
+<pre class="language-bash wrap"><code class="language-bash wrap">brew install python</code></pre>
+<p>After installation, you need to run a script to ensure Python 3 is
+recognized in your terminal:</p>
+<ul>
+<li>Navigate to the Applications folder.</li>
+<li>Find the Python 3.x folder.</li>
+<li>Right-click on Update Shell Profile.command and select “Open.” This
+will configure your terminal to recognize the python3 command.</li>
+</ul>
+<p>To check that <code>python3</code> is available on the command line,
+run:</p>
+<pre class="language-bash wrap"><code class="language-bash wrap">python3 --version</code></pre>
+<p>If Python 3 is installed correctly, you should see the version number
+displayed.</p>
+<h3 id="postgresql-1">PostgreSQL</h3>
+<p>To install PostgreSQL, and ensure that it is running, use the
+following commands:</p>
+<pre class="language-bash wrap"><code class="language-bash wrap">brew install postgresql@16
+brew services start postgresql@16</code></pre>
+<!-- ```zsh-w
+python3 -m ensurepip --upgrade
+pip3 install psycopg2-binary
+python3 -c "import psycopg2; print(psycopg2.__version__)"
+which psql
+
+brew install postgresql@16
+brew services start postgresql@16
+
+createdb postgres_db
+``` -->
+</details>
+<details id="linux-details">
+<summary>
+Linux
+</summary>
+<h3 id="python-3-1">Python 3</h3>
+<p>Python 3 is usually pre-installed. To make sure that you have the
+latest full version, run:</p>
+<pre class="language-command-line wrap"><code class="language-command-line wrap">sudo apt update
+sudo apt install -y python3-full
+
+python3 --version</code></pre>
+<p>If Python 3 is installed correctly, you should see the version number
+displayed.</p>
+<p>You will also need <code>pip</code> for installing packages:</p>
+<pre class="language-command-line wrap"><code class="language-command-line wrap">sudo apt install -y python3-pip</code></pre>
+</details>
+<script>
+  if (/windows/i.test(navigator.userAgent)) {
+    document.getElementById("windows-details").open = true;
+  } else if (/mac/i.test(navigator.userAgent)) {
+    document.getElementById("mac-details").open = true;
+  } else if (/linux/i.test(navigator.userAgent)) {
+    document.getElementById("linux-details").open = true;
+  }
+</script>
+<h3 id="vs-code">VS Code</h3>
+<a href="https://code.visualstudio.com/download">Download Virtual Studio
+Code</a>
+</section>
+<!-- A Basic Python Server -->
+<section id="A Basic Python Server" aria-labelledby="A Basic Python Server" data-item="A Basic Python Server">
+<h2>
+<a href="#A Basic Python Server">A Basic Python Server</a>
+</h2>
+<p>A key feature of this project is that it provides an API (Application
+Programming Interface) that allows a browser to communicate with a
+server, and through it, with a database.</p>
+<p>You can think of an API like the waiters in a restaurant. When you
+enter the restaurant, all the tables are arranged in public in a
+standard way. The kitchen is often invisible. A customer will talk to a
+waiter who will take the message into the kitchen, and, a short while
+later, the customer will receive the specific food that they
+ordered.</p>
+<p>In a news page in a browser, for example, articles and images will be
+arranged in a standard way, but depending on what links the visitor
+chooses, the specific data in the page will change.</p>
+<h3 id="fastapi">FastAPI</h3>
+<p>FastAPI is like a restaurant infrastructure. It is a framework that
+provides all the features that you need create a robust API, along with
+possibility to customize these features to your specific needs.</p>
+<p>Before you can open a new restaurant, you must have a building, with
+an electricity supply, a gas supply, plumbing, and all the equipment
+like stoves and fridges that the staff will need.</p>
+<p>Before you can use FastAPI, you must do something similar.
+Fortunately, installing the structure for FastAPI is much faster than
+building a restaurant, and it is cost-free.</p>
+<h3 id="a-virtual-environment-for-fastapi">A Virtual Environment for
+FastAPI</h3>
+<p>Here’s how to get started, with an ultra-simple Python server. In a
+Terminal window, in the directory where you want to create your project,
+run the following commands:</p>
+<pre class="language-bash wrap"><code class="language-bash wrap">mkdir event_assistant           # create the project directory
+cd event_assistant              # enter the project directory
+python3 -m venv .venv           # create a Virtual Environment</code></pre>
+<p>The line <code>python3 -m venv .venv</code> will create a directory
+called <code>.venv</code> (for Virtual ENVironment) in your
+<code>event_assistant</code> project directory.</p>
+<p>The dot (.) as the first character of the name will make the
+<code>.venv</code> folder invisible. This is the convention, but you can
+ignore it. Even the name <code>.venv</code> is a convention: you could
+call it “george”, and use “george” instead of <code>.venv</code>
+everywhere, but your colleagues will not appreciate this.</p>
+<details class="tldr">
+<summary>
+Contents of <code>.venv</code>
+</summary>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">./
+└── .venv/
+    ├── .gitignore
+    ├── bin/
+    │   ├── activate
+    │   ├── activate.csh
+    │   ├── activate.fish
+    │   ├── Activate.ps1
+    │   ├── pip*
+    │   ├── pip3*
+    │   ├── pip3.15*
+    │   ├── python -&gt; python3.15*
+    │   ├── python3 -&gt; python3.15*
+    │   └── python3.15 -&gt; /Library/Frameworks/Python.framework/Versions/3.15/bin/python3.15*
+    ├── include/
+    ├── lib/
+    │   └── python3.15/
+    └── pyvenv.cfg</code></pre>
+</details>
+<h3 id="activating-the-virtual-environment">Activating the Virtual
+Environment</h3>
+<p>Currently, if you run the command…</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">which python3</code></pre>
+<p>… the output will be something like:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">/Library/Frameworks/Python.framework/Versions/3.15/bin/python3</code></pre>
+<p>And if you run the command…</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">which python</code></pre>
+<p>… the output is likely to be:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">python not found</code></pre>
+<p>The following command activates the virtual environment:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">source .venv/bin/activate       # activate the Virtual Environment</code></pre>
+<p>Now, if you run the command…</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">which python3</code></pre>
+<p>… the output will be something like:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">/Users/full/path/to/event_assistant/.venv/bin/python3</code></pre>
+<p>And:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">which python</code></pre>
+<p>… will show something like:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">/Users/full/path/to/event_assistant/.venv/bin/python</code></pre>
+<p>In other words, now that you have activated the virtual environment,
+python3 and pip commands now point to the copies inside .venv, instead
+of the system-wide ones. This is important, because different projects
+may require different versions of the same package.</p>
+<p>Your next step is to use <code>pip</code>, the Python package
+manager, to install FastAPI locally. If you did not use a virtual
+environment for all your projects, you would be forced to use the same
+globally installed version in all your other projects, too.</p>
+<h3 id="installing-fastapi-in-the-virtual-environment">Installing
+FastAPI in the Virtual Environment</h3>
+<p>Run the following command to install FastAPI</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">pip install "fastapi[standard]" # install with the standard extras</code></pre>
+<p>You should see a rush of text in the Terminal window as
+<code>pip</code> downloads the files needed by FastAPI. These will
+appear in your <code>.venv</code> directory:</p>
+<details class="tldr">
+<summary>
+Updated contents of <code>.venv</code>
+</summary>
+<pre class="zsh line-numbers"><code class="zsh line-numbers"><i>./
+└── .venv/
+    ├── .gitignore
+    ├── bin/
+    │   ├── activate
+    │   ├── activate.csh
+    │   ├── activate.fish
+    │   ├── Activate.ps1</i><b>
+    │   ├── agent-detector*
+    │   ├── detect-installer-test*
+    │   ├── dotenv*
+    │   ├── email_validator*
+    │   ├── fastapi*
+    │   ├── httpx*
+    │   ├── httpx2*
+    │   ├── idna*
+    │   ├── markdown-it*
+    │   ├── normalizer*</b><i>
+    │   ├── pip*
+    │   ├── pip3*
+    │   ├── pip3.15*</i><b>
+    │   ├── pygmentize*</b><i>
+    │   ├── python -&gt; python3.15*
+    │   ├── python3 -&gt; python3.15*
+    │   ├── python3.15 -&gt; /Library/Frameworks/Python.framework/Versions/3.15/bin/python3.15*</i><b>
+    │   ├── typer*
+    │   ├── uvicorn*
+    │   ├── watchfiles*
+    │   └── websockets*</b><i>
+    ├── include/
+    ├── lib/
+    │   └── python3.15/
+    └── pyvenv.cfg</i></code></pre>
+</details>
+<p>With all this infrastructure in place, it’s time to cook a first
+simple meal.</p>
+<h3 id="a-simple-hello-world-server">A Simple Hello World Server</h3>
+<p>Below is the Python code for a FastAPI server that responds to
+requests for the root path with “Hello World!” (in Russian, to check how
+browsers will handle Unicode) <a
+href="https://en.wikipedia.org/wiki/FastAPI#Example">(source)</a>.</p>
+<p>Create a file called <code>main.py</code> inside your
+<code>event_assistant</code> project directory, and give it the
+following script:</p>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"># Import FastAPI class from the fastapi package
+from fastapi import FastAPI
+
+# Create an instance of the FastAPI app
+app = FastAPI()
+
+# Define a GET route for the root URL ("/")
+@app.get("/")
+async def read_root() -&gt; str:
+    # Return a plain text response
+    return "Здравствуй, мир!"</code></pre>
+<p>To launch this simple server, run the command:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers">fastapi dev main.py</code></pre>
+<p>You should see the following output (and more) in the Terminal:</p>
+<pre class="zsh line-numbers"><code class="zsh line-numbers"> ⚡️ Starting FastAPI in development mode
+
+ 🐍 Using import string: main:app
+
+ 🌐 Server started at http://127.0.0.1:8000
+    Documentation at http://127.0.0.1:8000/docs</code></pre>
+<h3 id="viewing-the-response-in-your-browser">Viewing the Response in
+your browser</h3>
+<p>Command-click on the link to <a
+href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>. Your favourite
+browser should open to show the server’s response to the request.</p>
+<figure>
+<img src="images/hwChrome.webp" alt="The response in Chrome" />
+<figcaption aria-hidden="true">The response in Chrome</figcaption>
+</figure>
+<figure>
+<img src="images/hwFirefox.webp" alt="The response in Firefox" />
+<figcaption aria-hidden="true">The response in Firefox</figcaption>
+</figure>
+<figure>
+<img src="images/hwSafari.webp" alt="The response in Safari" />
+<figcaption aria-hidden="true">The response in Safari</figcaption>
+</figure>
+<h3 id="why-the-browsers-disagree">Why the Browsers Disagree</h3>
+<p>The response from the server is a short string of plain text. It is
+not in HTML format. Chrome and Firefox guess (correctly) that the string
+is in <code>UTF-8</code> format. Safari makes a different guess: that it
+is in Windows-1252.</p>
+<h3 id="fixing-the-issue-live">Fixing the Issue Live</h3>
+<p>You could hide the problem by replacing the Cyrillic text with Latin
+characters. That would not be a solution, but it will show the power of
+FastAPI. Edit your <code>main.py</code> file as follows:</p>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i># Import FastAPI class from the fastapi package
+from fastapi import FastAPI
+
+# Create an instance of the FastAPI app
+app = FastAPI()
+
+# Define a GET route for the root URL ("/")
+@app.get("/")
+async def read_root() -&gt; str:
+    # Return a plain text response</i><b>
+    return "Hello world!"</b></code></pre>
+<p>Now, refresh your browser page. You should immediately see the text
+“Hello world!” appear in your browser.</p>
+<p>Your change doesn’t fix the encoding problem. It sidesteps it,
+because ‘Hello world!’ is pure ASCII, and every browser agrees on ASCII.
+The Unicode problem is still there, waiting for the next non-Latin
+string.</p>
+<p>What this does demonstrate is something useful. Remark that you did
+not stop and restart the server. FastAPI did this for you as soon
+automatically as it noticed a change to <code>main.py</code>. That saves
+you time.</p>
+<details class="pivot" open>
+<summary>
+Responding with HTML
+</summary>
+<p>In the next section, you’ll see how to make the server respond to a
+request with an HTML page, complete with an entry for
+<code>&lt;meta charset="UTF-8"&gt;</code>, so that all browsers will
+know how to treat the Unicode text.</p>
+</details>
+</section>
 <section id="intro" aria-labelledby="intro" data-item="Introduction">
 <h2>
 <a href="#intro">Introduction</a>
