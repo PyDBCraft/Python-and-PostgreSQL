@@ -21,7 +21,7 @@ content="width=device-width, initial-scale=1.0"
 <header>
 <a href="https://PyDBCraft.github.io"><img src="../public/svg/home.svg" alt="home"></a>
 <h1>Python-and-PostgreSQL</h1>
-<h3>A backend for a MeetUp like web app</h3>
+<h3>A backend for a MeetUp-like web app</h3>
 <h4>November 2026</h4>
 </header>
 <nav
@@ -57,6 +57,9 @@ evening?”</li>
 </ul>
 <p>… and have the backend convert this into a query for a database, and
 respond with a useful answer.</p>
+<p>It is written for someone who is comfortable with basic programming
+concepts and has used a database before, but has not yet built a web
+server.</p>
 <h3 id="a-two-part-tutorial">A Two-Part Tutorial</h3>
 <p>This tutorial is in two parts:</p>
 <ol type="1">
@@ -66,23 +69,33 @@ queries for the database.</li>
 </ol>
 <h3 id="toolchain">Toolchain</h3>
 <p>In building this first part of the project, you will be using the
-following tech stack:</p>
+following tools:</p>
+<h4 id="the-stack">The Stack</h4>
 <ul>
-<li>Python3: a scripting language to develop a server</li>
+<li>Python 3: a scripting language to develop a server</li>
 <li>FastAPI: a framework for communicating between a browser and the
 server</li>
 <li>Uvicorn: a server to run the Python script and reload it after any
 changes</li>
 <li>PostgreSQL: a database to hold data about users, groups and
 meetings</li>
-<li>A database driver (psycopg2-binary)</li>
+<li>A database driver (psycopg2-binary) that lets Python talk to
+PostgreSQL</li>
+</ul>
+<h4 id="the-tooling">The Tooling</h4>
+<ul>
 <li>Postman (for testing)</li>
+<li>Git</li>
+<li>VS Code</li>
 </ul>
 <p>I do not assume that you have used any of these technologies before.
 I include detailed explanations of each concept in collapsible sections.
 If you are a beginner, you can open these and learn precisely what is
 happening at each step. If you are more advanced, you can skip over
 these collapsed sections.</p>
+<p>Some collapsible sections contain deliberately broken versions of the
+code, with a challenge to diagnose the problem before reading the
+explanation. These are optional; the mainline code always works.</p>
 <h3 id="steps">Steps</h3>
 <p>This is what you will do as you work through this first part of the
 tutorial:</p>
@@ -97,24 +110,27 @@ World!”</li>
 <li>Connect to PostgreSQL</li>
 <li>Design and create tables (users, groups, meetings)</li>
 <li>Insert dummy data (users, groups, meetings)</li>
-<li>Query the database from the server; return all users, then all 1.
+<li>Query the database from the server; return all users, then all
 meetings</li>
-<li>Add a form to query meetings by group or date; server returns 1.
+<li>Add a form to query meetings by group or date; server returns
 filtered data</li>
 <li>Handle errors (empty form, invalid query)</li>
 <li>Register a user (form + server insert)</li>
-<li>Simplify “login”: store a user ID in a session/cookie, or 1.
-hardcode a user for now</li>
-<li>Retrieve meetings for the logged-in user (join users → groups → 1.
+<li>Simplify “login”: store a user ID in a session/cookie, or hardcode a
+user for now</li>
+<li>Retrieve meetings for the logged-in user (join users → groups →
 meetings)</li>
-<li>Concept: validate AI-generated SQL before running it (only 1.
-SELECT, allowed tables, no passwords)</li>
+<li>Concept: validate AI-generated SQL before running it (only SELECT,
+allowed tables, no passwords)</li>
 </ol>
 <h3 id="part-two">Part Two</h3>
 <p>The second part of the tutorial will build on the work that you do
 here. In the second part, you will learn how to allow natural language
 input and convert it to SQL queries similar to those you already created
 manually.</p>
+<p>By the end, you will have a working natural-language interface to
+your database, and you will understand how to validate AI-generated SQL
+before running it.</p>
 </section>
 
 <div class="spacer"></div>
