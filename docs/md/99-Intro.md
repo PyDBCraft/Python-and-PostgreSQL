@@ -43,13 +43,19 @@ In building this first part of the project, you will be using the following tool
 * A database driver (psycopg2-binary) that lets Python talk to PostgreSQL
 
 #### The Tooling
+These are the optional tools that I use during development:
+
 * Postman (for testing)
-* Git
-* VS Code
+* Git (for collaboration and version control)
+* Virtual Studio Code (for editing code)
+
+### Teaching Approach
 
 I do not assume that you have used any of these technologies before. I include detailed explanations of each concept in collapsible sections. If you are a beginner, you can open these and learn precisely what is happening at each step. If you are more advanced, you can skip over these collapsed sections.
 
 Some collapsible sections contain deliberately broken versions of the code, with a challenge to diagnose the problem before reading the explanation. These are optional; the mainline code always works.
+
+I am working on MacOS, and this will be visible from the screenshots. If you are working on a different operating system (such as Windows or Ubuntu) some of the Terminal commands will be different from those shown in the screenshots. Always check the text to choose the right command to use for your operating system.
 
 ### Steps
 
