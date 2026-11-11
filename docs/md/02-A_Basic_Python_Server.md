@@ -4,7 +4,7 @@
   aria-labelledby="A Basic Python Server"
   data-item="A Basic Python Server"
 >
-  <h2><a href="#A Basic Python Server">A Basic Python Server</a></h2>
+  <h2><a href="#a-basic-python-server">A Basic Python Server</a></h2>
 
 A key feature of this project is that it provides an API (Application Programming Interface) that allows a browser to communicate with a server, and through it, with a database.
 
@@ -18,7 +18,7 @@ FastAPI is like a restaurant infrastructure. It is a framework that provides all
 
 Before you can open a new restaurant, you must have a building, with an electricity supply, a gas supply, plumbing, and all the equipment like stoves and fridges that the staff will need. 
 
-Before you can use FastAPI, you must do something similar. Fortunately, installing the structure for FastAPI is much faster than building a restaurant, and it is cost-free.
+Before you can use FastAPI, you must have something similar. Fortunately, installing the structure for FastAPI is much faster than building a restaurant, and it is cost-free.
 
 ### A Virtual Environment for FastAPI
 
@@ -27,7 +27,7 @@ Here's how to get started, with an ultra-simple Python server. In a Terminal win
 ```bash-w
 mkdir event_assistant           # create the project directory
 cd event_assistant              # enter the project directory
-python3 -m venv .venv           # create a Virtual Environment
+python3 -m venv .venv           # create a Virtual ENVironment
 ```
 
 The line `python3 -m venv .venv` will create a directory called `.venv` (for Virtual ENVironment) in your `event_assistant` project directory.
@@ -36,7 +36,7 @@ The dot (.) as the first character of the name will make the `.venv` folder invi
 
 <details class="tldr">
 <summary>Contents of `.venv`</summary>
-```zsh
+```bash-w
 ./
 └── .venv/
     ├── .gitignore
@@ -63,49 +63,49 @@ The dot (.) as the first character of the name will make the `.venv` folder invi
 
 Currently, if you run the command...
 
-```zsh
+```bash-w
 which python3
 ```
 ... the output will be something like:
-```zsh
+```bash-w
 /Library/Frameworks/Python.framework/Versions/3.15/bin/python3
 ```
 And if you run the command...
 
-```zsh
+```bash-w
 which python
 ```
 ... the output is likely to be:
-```zsh
+```bash-w
 python not found
 ```
 
 The following command activates the virtual environment:
 
-```zsh
-source .venv/bin/activate       # activate the Virtual Environment
+```bash-w
+source .venv/bin/activate       # activate the Virtual ENVironment
 ```
 
 Now, if you run the command...
 
-```zsh
+```bash-w
 which python3
 ```
 ... the output will be something like:
-```zsh       
+```bash-w       
 /Users/full/path/to/event_assistant/.venv/bin/python3
 ```
 
 And:
-```zsh
+```bash-w
 which python
 ```
 ... will show something like:
-```zsh       
+```bash-w       
 /Users/full/path/to/event_assistant/.venv/bin/python
 ```
 
-In other words, now that you have activated the virtual environment, python3 and pip commands now point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same package.
+In other words, now that you have activated the virtual environment, python3 and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
 
 Your next step is to use `pip`, the Python package manager, to install FastAPI locally. If you did not use a virtual environment for all your projects, you would be forced to use the same globally installed version in all your other projects, too.
 
@@ -113,14 +113,14 @@ Your next step is to use `pip`, the Python package manager, to install FastAPI l
 
 Run the following command to install FastAPI
 
-```zsh
+```bash-w
 pip install "fastapi[standard]" # install with the standard extras
 ```
 You should see a rush of text in the Terminal window as `pip` downloads the files needed by FastAPI. These will appear in your `.venv` directory:
 
 <details class="tldr" >
 <summary>Updated contents of `.venv`</summary>
-```zsh
+```bash-w
 <i>./
 └── .venv/
     ├── .gitignore
@@ -161,7 +161,7 @@ With all this infrastructure in place, it's time to cook a first simple meal.
 
 ### A Simple Hello World Server
 
-Below is the Python code for a FastAPI server that responds to requests for the root path with "Hello World!" (in Russian, to check how browsers will handle Unicode) [(source)](https://en.wikipedia.org/wiki/FastAPI#Example).
+Below is the Python code for a FastAPI server that responds to requests for the root path with "Hello World!" (in Russian, to check how browsers will handle Unicode).
 
 Create a file called `main.py` inside your `event_assistant` project directory, and give it the following script:
 
@@ -180,12 +180,12 @@ async def read_root() -> str:
 ```
 
 To launch this simple server, run the command:
-```zsh
+```bash-w
 fastapi dev main.py
 ```
 You should see the following output (and more) in the Terminal:
 
-```zsh
+```bash-w
  ⚡️ Starting FastAPI in development mode
 
  🐍 Using import string: main:app
@@ -231,6 +231,21 @@ Now, refresh your browser page. You should immediately see the text "Hello world
 Your change doesn't fix the encoding problem. It sidesteps it, because 'Hello world!' is pure ASCII, and every browser agrees on ASCII. The Unicode problem is still there, waiting for the next non-Latin string. 
 
 What this does demonstrate is something useful. Remark that you did not stop and restart the server. FastAPI did this for you as soon automatically as it noticed a change to `main.py`. That saves you time.
+
+<details class="question" open>
+<summary>What happens if you include a pathname in the URL?</summary>
+Try visiting [http://127.0.0.1:8000/foo]. What happens(http://127.0.0.1:8000/foo). What happens?
+
+![Any path other than the root `/` responds with "Not Found"](images/fooNotFound.webp)
+
+The line 
+
+```python-#8
+@app.get("/")
+```
+
+
+</details>
 
 <details class="pivot" open>
 <summary>Responding with HTML</summary>

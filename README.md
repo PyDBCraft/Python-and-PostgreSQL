@@ -1,19 +1,5 @@
 # Python-and-PostgreSQL #
 
-To create your own content, edit the file at `docs/md/99-Intro.md` and add more `.md` files in the `docs/md/` folder
-```
-.
-├── README.md
-├── docs
-│   ├── images
-│   ├── index.html
-│   └── md
-│       ├── 99-Intro.md
-│       └── images -> ../images
-├── package.json
-└── public -> ../PyDBCraft/public
-```
+This tutorial is designed to help you build an “intelligent event assistant” for a web site similar to MeetUp.com. You will be using Python and PostgreSQL, along with other tools like Git and Postman.
 
-Visit [the HTM-Elves Organization site](https://HTM-Elves.github.io) for tutorials on how to work with the HTM-Elves workflow.
-
-Replace the contents of this README.md file with a summary of the tutorial that you are writing.
+[Direct Link]( https://PyDBCraft.github.io/Python-and-PostgreSQL/)

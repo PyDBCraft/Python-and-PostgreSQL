@@ -149,7 +149,7 @@ Code</a>
 <!-- A Basic Python Server -->
 <section id="A Basic Python Server" aria-labelledby="A Basic Python Server" data-item="A Basic Python Server">
 <h2>
-<a href="#A Basic Python Server">A Basic Python Server</a>
+<a href="#a-basic-python-server">A Basic Python Server</a>
 </h2>
 <p>A key feature of this project is that it provides an API (Application
 Programming Interface) that allows a browser to communicate with a
@@ -170,7 +170,7 @@ possibility to customize these features to your specific needs.</p>
 <p>Before you can open a new restaurant, you must have a building, with
 an electricity supply, a gas supply, plumbing, and all the equipment
 like stoves and fridges that the staff will need.</p>
-<p>Before you can use FastAPI, you must do something similar.
+<p>Before you can use FastAPI, you must have something similar.
 Fortunately, installing the structure for FastAPI is much faster than
 building a restaurant, and it is cost-free.</p>
 <h3 id="a-virtual-environment-for-fastapi">A Virtual Environment for
@@ -180,7 +180,7 @@ Terminal window, in the directory where you want to create your project,
 run the following commands:</p>
 <pre class="language-bash wrap"><code class="language-bash wrap">mkdir event_assistant           # create the project directory
 cd event_assistant              # enter the project directory
-python3 -m venv .venv           # create a Virtual Environment</code></pre>
+python3 -m venv .venv           # create a Virtual ENVironment</code></pre>
 <p>The line <code>python3 -m venv .venv</code> will create a directory
 called <code>.venv</code> (for Virtual ENVironment) in your
 <code>event_assistant</code> project directory.</p>
@@ -193,7 +193,7 @@ everywhere, but your colleagues will not appreciate this.</p>
 <summary>
 Contents of <code>.venv</code>
 </summary>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">./
+<pre class="language-bash wrap"><code class="language-bash wrap">./
 └── .venv/
     ├── .gitignore
     ├── bin/
@@ -215,27 +215,27 @@ Contents of <code>.venv</code>
 <h3 id="activating-the-virtual-environment">Activating the Virtual
 Environment</h3>
 <p>Currently, if you run the command…</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">which python3</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">which python3</code></pre>
 <p>… the output will be something like:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">/Library/Frameworks/Python.framework/Versions/3.15/bin/python3</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">/Library/Frameworks/Python.framework/Versions/3.15/bin/python3</code></pre>
 <p>And if you run the command…</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">which python</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">which python</code></pre>
 <p>… the output is likely to be:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">python not found</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">python not found</code></pre>
 <p>The following command activates the virtual environment:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">source .venv/bin/activate       # activate the Virtual Environment</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">source .venv/bin/activate       # activate the Virtual ENVironment</code></pre>
 <p>Now, if you run the command…</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">which python3</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">which python3</code></pre>
 <p>… the output will be something like:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">/Users/full/path/to/event_assistant/.venv/bin/python3</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">/Users/full/path/to/event_assistant/.venv/bin/python3</code></pre>
 <p>And:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">which python</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">which python</code></pre>
 <p>… will show something like:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">/Users/full/path/to/event_assistant/.venv/bin/python</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">/Users/full/path/to/event_assistant/.venv/bin/python</code></pre>
 <p>In other words, now that you have activated the virtual environment,
-python3 and pip commands now point to the copies inside .venv, instead
-of the system-wide ones. This is important, because different projects
-may require different versions of the same package.</p>
+python3 and pip commands point to the copies inside .venv, instead of
+the system-wide ones. This is important, because different projects may
+require different versions of the same custom package.</p>
 <p>Your next step is to use <code>pip</code>, the Python package
 manager, to install FastAPI locally. If you did not use a virtual
 environment for all your projects, you would be forced to use the same
@@ -243,7 +243,7 @@ globally installed version in all your other projects, too.</p>
 <h3 id="installing-fastapi-in-the-virtual-environment">Installing
 FastAPI in the Virtual Environment</h3>
 <p>Run the following command to install FastAPI</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">pip install "fastapi[standard]" # install with the standard extras</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">pip install "fastapi[standard]" # install with the standard extras</code></pre>
 <p>You should see a rush of text in the Terminal window as
 <code>pip</code> downloads the files needed by FastAPI. These will
 appear in your <code>.venv</code> directory:</p>
@@ -251,7 +251,7 @@ appear in your <code>.venv</code> directory:</p>
 <summary>
 Updated contents of <code>.venv</code>
 </summary>
-<pre class="zsh line-numbers"><code class="zsh line-numbers"><i>./
+<pre class="language-bash wrap"><code class="language-bash wrap"><i>./
 └── .venv/
     ├── .gitignore
     ├── bin/
@@ -290,8 +290,7 @@ simple meal.</p>
 <h3 id="a-simple-hello-world-server">A Simple Hello World Server</h3>
 <p>Below is the Python code for a FastAPI server that responds to
 requests for the root path with “Hello World!” (in Russian, to check how
-browsers will handle Unicode) <a
-href="https://en.wikipedia.org/wiki/FastAPI#Example">(source)</a>.</p>
+browsers will handle Unicode).</p>
 <p>Create a file called <code>main.py</code> inside your
 <code>event_assistant</code> project directory, and give it the
 following script:</p>
@@ -307,9 +306,9 @@ async def read_root() -&gt; str:
     # Return a plain text response
     return "Здравствуй, мир!"</code></pre>
 <p>To launch this simple server, run the command:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers">fastapi dev main.py</code></pre>
+<pre class="language-bash wrap"><code class="language-bash wrap">fastapi dev main.py</code></pre>
 <p>You should see the following output (and more) in the Terminal:</p>
-<pre class="zsh line-numbers"><code class="zsh line-numbers"> ⚡️ Starting FastAPI in development mode
+<pre class="language-bash wrap"><code class="language-bash wrap"> ⚡️ Starting FastAPI in development mode
 
  🐍 Using import string: main:app
 
@@ -362,6 +361,21 @@ string.</p>
 not stop and restart the server. FastAPI did this for you as soon
 automatically as it noticed a change to <code>main.py</code>. That saves
 you time.</p>
+<details class="question" open>
+<summary>
+What happens if you include a pathname in the URL?
+</summary>
+<p>Try visiting [http://127.0.0.1:8000/foo]. What
+happens(http://127.0.0.1:8000/foo). What happens?</p>
+<figure>
+<img src="images/fooNotFound.webp"
+alt="Any path other than the root / responds with “Not Found”" />
+<figcaption aria-hidden="true">Any path other than the root
+<code>/</code> responds with “Not Found”</figcaption>
+</figure>
+<p>The line</p>
+<pre class="language-python line-numbers" data-start="8"><code class="language-python line-numbers">@app.get("/")</code></pre>
+</details>
 <details class="pivot" open>
 <summary>
 Responding with HTML
@@ -371,6 +385,12 @@ request with an HTML page, complete with an entry for
 <code>&lt;meta charset="UTF-8"&gt;</code>, so that all browsers will
 know how to treat the Unicode text.</p>
 </details>
+</section>
+<!-- Responding with HTML -->
+<section id="responding-with-html" aria-labelledby="responding-with-html" data-item="Responding with HTML">
+<h2>
+<a href="#responding-with-html">Responding with HTML</a>
+</h2>
 </section>
 <section id="intro" aria-labelledby="intro" data-item="Introduction">
 <h2>
