@@ -25,15 +25,16 @@ Before you can use FastAPI, you must have something similar. Fortunately, instal
 Here's how to get started, with an ultra-simple Python server. In a Terminal window, in the directory where you want to create your project, run the following commands:
 
 ```bash-w
-mkdir event_assistant           # create the project directory
-cd event_assistant              # enter the project directory
-python3 -m venv .venv           # create a Virtual ENVironment
+mkdir event_assistant
+cd event_assistant
+python3 -m venv .venv
 ```
 
 The line `python3 -m venv .venv` will create a directory called `.venv` (for Virtual ENVironment) in your `event_assistant` project directory.
 
 The dot (.) as the first character of the name will make the `.venv` folder invisible. This is the convention, but you can ignore it. Even the name `.venv` is a convention: you could call it "george", and use "george" instead of `.venv` everywhere, but your colleagues will not appreciate this.
 
+::: {.os .mac}
 <details class="tldr">
 <summary>Contents of `.venv`</summary>
 ```bash-w
@@ -58,8 +59,9 @@ The dot (.) as the first character of the name will make the `.venv` folder invi
 ```
 
 </details>
+:::
 
-### Activating the Virtual Environment
+### Discovering the Global Environment
 
 Currently, if you run the command...
 
@@ -67,30 +69,79 @@ Currently, if you run the command...
 which python3
 ```
 ... the output will be something like:
+
+::: {.os .mac}
 ```bash-w
 /Library/Frameworks/Python.framework/Versions/3.15/bin/python3
 ```
+:::
+
+::: {.os .win}
+```bash-w
+/c/Users/james/AppData/Local/Microsoft/WindowsApps/python3
+```
+:::
+
+::: {.os .mac}
 And if you run the command...
 
 ```bash-w
 which python
 ```
 ... the output is likely to be:
+
 ```bash-w
 python not found
 ```
+:::
 
-The following command activates the virtual environment:
+### Activitating a Virtual Environment
 
+The following command activates a virtual environment:
+
+::: {.os .mac}
 ```bash-w
-source .venv/bin/activate       # activate the Virtual ENVironment
+source .venv/bin/activate
+```
+:::
+
+::: {.os .win}
+```bash-w
+.venv/Scripts/Activate.psl
 ```
 
+<details class="trouble">
+<summary>Troubleshooting</summary>
+
+If you see an error message like...
+```bash-w
+File C:\Users\james\Documents\event_assistant\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+... don't worry. PowerShell's default execution policy blocks scripts (including the `Activate.ps1` file) from running to protect you from malicious code.
+
+To tell PowerShell that you know what you are doing, run this command once:
+
+```bash-w
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+This allows locally created scripts (like the venv activation script) to run. Simply run the command...
+
+```bash-w
+.venv/Scripts/Activate.psl
+```
+
+... again after you run the `Set-ExecutionPolicy...` command, and all should be good.
+
+</details>
+:::
+
+::: {.os .mac}
 Now, if you run the command...
 
 ```bash-w
 which python3
 ```
+
 ... the output will be something like:
 ```bash-w       
 /Users/full/path/to/event_assistant/.venv/bin/python3
@@ -102,8 +153,21 @@ which python
 ```
 ... will show something like:
 ```bash-w       
-/Users/full/path/to/event_assistant/.venv/bin/python
+<i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python
 ```
+:::
+
+::: {.os .win}
+Now if you run the command ...
+```bash-w
+which python
+```
+... you should see something like:
+
+```bash-w       
+<i>/c/Users/</i><b>full/path/to/event_assistant/.venv/Scripts/</b>python
+```
+:::
 
 In other words, now that you have activated the virtual environment, python3 and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
 
@@ -111,13 +175,23 @@ Your next step is to use `pip`, the Python package manager, to install FastAPI l
 
 ### Installing FastAPI in the Virtual Environment
 
-Run the following command to install FastAPI
+Run the following command to install FastAPI with the standard extras that it needs to operate:
 
+::: {.os .mac}
 ```bash-w
-pip install "fastapi[standard]" # install with the standard extras
+pip install "fastapi[standard]"
 ```
-You should see a rush of text in the Terminal window as `pip` downloads the files needed by FastAPI. These will appear in your `.venv` directory:
+:::
 
+::: {.os .win}
+```bash-w
+$env:PYYAML_FORCE_LIBYAML="0"
+pip install "fastapi[standard]"
+```
+:::
+You should see a rush of text in the Terminal window as `pip` downloads the files needed by FastAPI. These will appear in your `.venv` directory.
+
+::: {.os .mac}
 <details class="tldr" >
 <summary>Updated contents of `.venv`</summary>
 ```bash-w
@@ -156,6 +230,7 @@ You should see a rush of text in the Terminal window as `pip` downloads the file
     └── pyvenv.cfg</i>
 ```
 </details>
+:::
 
 With all this infrastructure in place, it's time to cook a first simple meal.
 
@@ -180,9 +255,11 @@ async def read_root() -> str:
 ```
 
 To launch this simple server, run the command:
+
 ```bash-w
 fastapi dev main.py
 ```
+
 You should see the following output (and more) in the Terminal:
 
 ```bash-w
@@ -204,13 +281,15 @@ Command-click on the link to [http://127.0.0.1:8000](http://127.0.0.1:8000). You
 
 ![The response in Safari](images/hwSafari.webp)
 
+![The response in Edge](images/hwEdge.webp)
+
 ### Why the Browsers Disagree
 
-The response from the server is a short string of plain text. It is not in HTML format. Chrome and Firefox guess (correctly) that the string is in `UTF-8` format. Safari makes a different guess: that it is in Windows-1252.
+The response from the server is a short string of plain text. It is not in HTML format. Chrome, Firefox and Edge guess (correctly) that the string is in `UTF-8` format. Safari makes a different guess: that it is in Windows-1252.
 
 ### Fixing the Issue Live
 
-You could hide the problem by replacing the Cyrillic text with Latin characters. That would not be a solution, but it will show the power of FastAPI. Edit your `main.py` file as follows:
+You could hide the problem, à la [Potemkin village](https://en.wikipedia.org/wiki/Potemkin_village), by replacing the Cyrillic text with Latin characters. That would not be a solution, but it will show the power of FastAPI. Edit your `main.py` file as follows:
 
 ```python
 <i># Import FastAPI class from the fastapi package
@@ -238,12 +317,37 @@ Try visiting [http://127.0.0.1:8000/foo]. What happens(http://127.0.0.1:8000/foo
 
 ![Any path other than the root `/` responds with "Not Found"](images/fooNotFound.webp)
 
-The line 
+The line...
 
 ```python-#8
 @app.get("/")
 ```
 
+... ensures that the following command...
+
+```python-#9
+async def read_root() -> str:
+    # Return a plain text response</i><b>
+    return "Hello world!"</b>
+```
+
+... applies specifically to a request for the root URL (`/`), and no other. For now, your server has no instructions about what to do for any other request, so it responds with the JSON string: `'{ "detail": "Not Found" }'`.
+
+A major theme in this tutorial is how to handle many different requests, including unexpected ones. So a full solution for this issue is coming.
+
+</details>
+
+<details class="note" open>
+<summary>A note about `__pycache__`</summary>
+You may notice that a directory named `__pycache__/`, containing a file named `main.cpython-315.pyc`, appeared at the root of your `event_assistant` project folder, after you ran...
+
+```bash-w
+fastapi dev main.py
+```
+
+The `__pycache__` directory is where Python caches compiled versions of your code to start faster next time. **You can safely ignore this folder.** If you delete it, it will be recreated automatically next time the server starts.
+
+If you are using Git, you should make sure Git ignores it too, by adding `__pycache__` to your `.gitignore` file.
 
 </details>
 

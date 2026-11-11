@@ -7,11 +7,10 @@
   <h2><a href="#work-environment">Setting up your Work Environment</a></h2>
   
 
-You will need the following apps installed on your development computer in order to complete this tutorial. How you do this depends on your Operating System.
+You will need the following apps installed on your development computer in order to complete this tutorial. How you do this depends on your Operating System. Ensure that your Operating System is selected in the sidebar on the left:
 
-<details id="windows-details">
-  <summary>Windows</summary>
 
+::: {.os .win}
 ### Python 3
 You can [download Python](https://www.python.org/downloads/) from the official website.
 
@@ -26,12 +25,9 @@ This is important, because it allows you to run Python from the command line.
 ![Checking that Python is available on the command line](images/pythonVersion.webp)
 
 ### PostgreSQL
+:::
 
-</details>
-
-<details id="mac-details">
-  <summary>MacOS</summary>
-
+::: {.os .mac}
 ### Python
 You can [download Python](https://www.python.org/downloads/) from the official website, or you can run:
 
@@ -60,7 +56,7 @@ To install PostgreSQL, and ensure that it is running, use the following commands
 brew install postgresql@16
 brew services start postgresql@16
 ```
-
+:::
 
 <!-- ```zsh-w
 python3 -m ensurepip --upgrade
@@ -74,13 +70,9 @@ brew services start postgresql@16
 createdb postgres_db
 ``` -->
 
-</details>
-
-<details id="linux-details">
-  <summary>Linux</summary>
-
-  ### Python 3
-  Python 3 is usually pre-installed. To make sure that you have the latest full version, run:
+::: {.os .nux}
+### Python
+Python 3 is usually pre-installed. To make sure that you have the latest full version, run:
 
 ```language-command-line-w
 sudo apt update
@@ -95,19 +87,7 @@ You will also need `pip` for installing packages:
 ```language-command-line-w
 sudo apt install -y python3-pip
 ```
-  
-
-</details>
-
-<script>
-  if (/windows/i.test(navigator.userAgent)) {
-    document.getElementById("windows-details").open = true;
-  } else if (/mac/i.test(navigator.userAgent)) {
-    document.getElementById("mac-details").open = true;
-  } else if (/linux/i.test(navigator.userAgent)) {
-    document.getElementById("linux-details").open = true;
-  }
-</script>
+:::
 
 ### VS Code
 [Download Virtual Studio Code](https://code.visualstudio.com/download)
