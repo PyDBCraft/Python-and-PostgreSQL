@@ -348,7 +348,17 @@ If you are using Git, you should make sure Git ignores it too, by adding `__pyca
 </details>
 
 <details class="pivot" open>
-<summary>Responding with HTML</summary>
+<summary>What You've Just Learned</summary>
+In this section, you have:
+
+1. Created a virtual environment for running your Python project
+2. Installed a number of dependencies, including `FastAPI`, so that they are available for Python to use locally
+3. Created a barebones server that proves that it is working by responding with a string when the root path (`/`) is requested
+4. Noted that different browsers may treat the response differently
+5. Noted that requests for paths other than `/` are treated as "Not Found"
+6. Discovered that FastAPI will restart your server automatically after you make a change
+7. Discovered that it is important to try to break your project, so that you fix it before others start to use it.
+
 In the next section, you'll see how to make the server respond to a request with an HTML page, complete with an entry for `<meta charset="UTF-8">`, so that all browsers will know how to treat the Unicode text.
 
 </details>

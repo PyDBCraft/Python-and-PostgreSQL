@@ -101,11 +101,17 @@ explanation. These are optional; the mainline code always works.</p>
 <p>I am working on MacOS, and this will be visible from the screenshots.
 If you are working on a different operating system (such as Windows)
 some of the Terminal commands will be different from those shown in the
-screenshots. Always check the text to choose the right command to use
-for your operating system.</p>
+screenshots. Choose your operating system from the pop-up menu in the
+sidebar, and always check that the code snippets match this.</p>
 <figure>
 <img src="images/osFilter.webp" alt="Choose your operating system" />
 <figcaption aria-hidden="true">Choose your operating system</figcaption>
+</figure>
+<figure>
+<img src="images/os-specific.webp"
+alt="Check that code snippets match your operating system" />
+<figcaption aria-hidden="true">Check that code snippets match your
+operating system</figcaption>
 </figure>
 <h3 id="steps">Steps</h3>
 <p>This is what you will do as you work through this first part of the
@@ -579,8 +585,25 @@ file.</p>
 </details>
 <details class="pivot" open>
 <summary>
-Responding with HTML
+What You’ve Just Learned
 </summary>
+<p>In this section, you have:</p>
+<ol type="1">
+<li>Created a virtual environment for running your Python project</li>
+<li>Installed a number of dependencies, including <code>FastAPI</code>,
+so that they are available for Python to use locally</li>
+<li>Created a barebones server that proves that it is working by
+responding with a string when the root path (<code>/</code>) is
+requested</li>
+<li>Noted that different browsers may treat the response
+differently</li>
+<li>Noted that requests for paths other than <code>/</code> are treated
+as “Not Found”</li>
+<li>Discovered that FastAPI will restart your server automatically after
+you make a change</li>
+<li>Discovered that it is important to try to break your project, so
+that you fix it before others start to use it.</li>
+</ol>
 <p>In the next section, you’ll see how to make the server respond to a
 request with an HTML page, complete with an entry for
 <code>&lt;meta charset="UTF-8"&gt;</code>, so that all browsers will
@@ -655,7 +678,16 @@ look like now:</p>
     │   └── styles.css
     └── index.html</b></code></pre>
 <h3 id="updating-main.py">Updating <code>main.py</code></h3>
-<ol start="7" type="1">
+<p>Each dish that you cook requires its own tools and utensils. A
+well-stocked kitchen cupboard will provide these for you.</p>
+<p>When you add a new feature to a Python project, you often need to use
+new tools. These can be stored in Python itself (as is the case for
+<code>pathlib</code> below), or in one of the dependencies that you have
+included. Here, you will be using <code>fastapi.staticfiles</code> to
+define a directory from which your server can serve pre-built files,
+like the <code>index.html</code> and <code>styles.css</code> files that
+you have just made.</p>
+<ol type="1">
 <li>Make the following changes to the <code>main.py</code> script:</li>
 </ol>
 <pre class="language-python line-numbers"><code class="language-python line-numbers"><i>from fastapi import FastAPI</i>
@@ -696,10 +728,12 @@ file is to be treated an <code>UTF-8</code></p>
 </details>
 <details class="pivot" open>
 <summary>
-The <code>index.html</code> file as a client for the backend
+What You’ve Just Learned
 </summary>
-<p>Now that you have seen how to get your server to deliver an HTML
-page, you are ready to modify <code>index.html</code> so that it sends
+<p>You have seen how to get your server to deliver an HTML page, and the
+files that this HTML page needs to load, using
+<code>fastapi.staticfiles</code>.</p>
+<p>Now you are ready to modify <code>index.html</code> so that it sends
 an API request to your server. This is what you will do in the next
 section.</p>
 </details>
@@ -707,8 +741,13 @@ section.</p>
 <!-- Making an API Request -->
 <section id="making-an-api-request" aria-labelledby="making-an-api-request" data-item="Making an API Request">
 <h2>
-<a href="#making-an-api-request">Making an API Request</a>
+<a href="#making-an-api-request">Making an API Request from a Client
+Page</a>
 </h2>
+<p>In this section, you’ll make changes to both your new
+<code>index.html</code> page and your <code>main.py</code> server
+script, so that you can ask the server to tell you the time. You’ll
+start by adding a button to <code>index.html</code>.</p>
 <ol type="1">
 <li>Make the following changes to the <code>index.html</code> file, to
 add a button and way to show the response to a click on the button:</li>
@@ -753,6 +792,16 @@ function getTime(params) {
   fetch(endpoint)
   .then(response =&gt; console.log("response:", response))
 }</code></pre>
+<p>Notice that this script is read in by the <code>index.html</code>
+page, in line 6:</p>
+<pre class="language-html line-numbers" data-start="6"><code class="language-html line-numbers">  &lt;script defer src="assets/script.js"&gt;&lt;/script&gt;</code></pre>
+<p>The <code>defer</code> attribute means: wait until the browser has
+created all the HTML elements before running the script. This ensures
+that the Get Server Time button exists before the script tries to
+manipulate it.</p>
+<p>A click on the Get Server Time button will send a request for
+<code>/get-time</code> in the server script… but the server script is
+not yet ready to respond to this.</p>
 <ol start="4" type="1">
 <li>Refresh your browser page.</li>
 <li>Click on the button.</li>
@@ -765,8 +814,27 @@ alt="The API request sent by the Get Server Time button receives no response" />
 Time button receives no response</figcaption>
 </figure>
 <h3 id="whats-not-happening">What’s (Not) Happening</h3>
+<p>In <code>public/assets/script.js</code> , the <code>fetch</code>
+command…</p>
+<pre class="language-javascript line-numbers" data-start="8"><code class="language-javascript line-numbers">  fetch(endpoint)</code></pre>
+<p>… tells the browser to make a request to the server for the endpoint
+<code>/get_time</code>. This is an asynchronous process. It may take the
+server some time to respond, so the line…</p>
+<pre class="language-javascript line-numbers" data-start="9"><code class="language-javascript line-numbers">  .then(response =&gt; console.log("response:", response))</code></pre>
+<p>… waits for the response before it executes.</p>
+<p>However, the server does not know how to respond, because you have
+not yet told it what to do when it receives a request for anything other
+than the root (<code>/</code>) path. As a result, the server responds
+with a JSON string, including <code>status: 404</code>,
+<code>ok: false</code> and <code>statusText: "Not Found"</code>.</p>
+<p>This is not what you want, but it is what your code asked for, and
+what is logged to your browser console.</p>
 <h3 id="getting-the-server-to-respond-to-the-request">Getting the Server
 to Respond to the Request</h3>
+<p>To get <code>main.py</code> to respond correctly to this new request,
+you need to make some changes. In particular, you are going to need to
+use a new tool — the <code>datatime</code> class — which is part of the
+core of Python.</p>
 <ol start="7" type="1">
 <li>Make the following changes to <code>main.py</code>:</li>
 </ol>
@@ -787,6 +855,7 @@ async def get_time():
 
 # Ensure that a request for "/" serves up "public/index.html"
 app.mount("/", StaticFiles(directory=Path("public"), html=True))</i></code></pre>
+<p>FastAPI should restart the server for you automatically.</p>
 <ol start="8" type="1">
 <li>Click on the Get Server Time button again, and observe how the
 response shown in the browser Console has changed.</li>
@@ -797,8 +866,28 @@ alt="The server responds, but the client doesn’t treat the response" />
 <figcaption aria-hidden="true">The server responds, but the client
 doesn’t treat the response</figcaption>
 </figure>
+<h3 id="understanding-the-servers-response">Understanding the Server’s
+Response</h3>
+<p>After the changes you made to <code>main.py</code>, the server
+<em>does</em> know how to handle a request for <code>/get_time</code>.
+As you can see <code>status</code> is now <a
+href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200"><code>200</code></a>,
+<code>ok</code> is <code>true</code> and <code>statusText</code> is
+<code>"OK"</code>. But where is the time?</p>
+<p>You’ll notice that the response includes
+<code>body: ReadableStream</code>.</p>
+<p>When you make a request from a server, the response can be as short
+as “ok”, or it may be live-streamed video, whose length cannot yet be
+known. In both cases, the server will wrap its response in a
+<code>ReadableStream</code> which the client can unpack, bit by bit, as
+it becomes available.</p>
+<p>In this case, the <code>body</code> contains the JSON string
+<code>{"time": &lt;time string in isoformat&gt;}</code>, but this has to
+be unwrapped before it can be used.</p>
 <h3 id="treating-the-response-in-the-client">Treating the Response in
-the client</h3>
+the Client</h3>
+<p>Here’s how to extract the JSON object from the body of the response
+message.</p>
 <ol start="9" type="1">
 <li>Make the following changes to the file at
 <code>public/assets/script.js</code>:</li>
@@ -828,15 +917,34 @@ alt="Each time you click on the button, the displayed time changes" />
 <figcaption aria-hidden="true">Each time you click on the button, the
 displayed time changes</figcaption>
 </figure>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>In this section, you have:</p>
+<ol type="1">
+<li>Edited your <code>index.html</code> file so that it displays a
+button and a field to show text.</li>
+<li>Attached a script to the <code>index.html</code> page, to make the
+button active, and to display the result of its action.</li>
+<li>Update <code>main.py</code> so that it responds to a request for a
+specific pathname.</li>
+<li>Seen the importance of progressing step by step, checking at each
+stage the results of your changes.</li>
+</ol>
+<p><strong>You now have a server that can respond dynamically to a
+specific request.</strong></p>
+<p>In the next section, you will take a step to the side, to see how
+Python can connect to a PostgreSQL database. In the section after that,
+you will use your new knowledge to get your server to respond to a
+request for data from the database.</p>
+</details>
 </section>
 <!-- Connecting to a Database -->
 <section id="connecting-to-a-database" aria-labelledby="connecting-to-a-database" data-item="Connecting a Database">
 <h2>
 <a href="#connecting-to-a-database">Connecting to a Database</a>
 </h2>
-<div class="os mac">
-<p>Mac only</p>
-</div>
 </section>
 
 <div class="spacer"></div>

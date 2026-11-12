@@ -55,9 +55,11 @@ I do not assume that you have used any of these technologies before. I include d
 
 Some collapsible sections contain deliberately broken versions of the code, with a challenge to diagnose the problem before reading the explanation. These are optional; the mainline code always works.
 
-I am working on MacOS, and this will be visible from the screenshots. If you are working on a different operating system (such as Windows) some of the Terminal commands will be different from those shown in the screenshots. Always check the text to choose the right command to use for your operating system.
+I am working on MacOS, and this will be visible from the screenshots. If you are working on a different operating system (such as Windows) some of the Terminal commands will be different from those shown in the screenshots. Choose your operating system from the pop-up menu in the sidebar, and always check that the code snippets match this.
 
 ![Choose your operating system](images/osFilter.webp)
+
+![Check that code snippets match your operating system](images/os-specific.webp)
 
 ### Steps
 

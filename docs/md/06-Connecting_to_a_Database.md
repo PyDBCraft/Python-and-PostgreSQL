@@ -7,9 +7,6 @@
   <h2><a href="#connecting-to-a-database">Connecting to a Database</a></h2>
     
 
-::: {.os .mac}
-Mac only
-:::
 
 
 </section>

@@ -70,7 +70,11 @@ This is what your `exent_assistant` project folder should look like now:
 
 ### Updating `main.py`
 
-7. Make the following changes to the `main.py` script:
+Each dish that you cook requires its own tools and utensils. A well-stocked kitchen cupboard will provide these for you.
+
+When you add a new feature to a Python project, you often need to use new tools. These can be stored in Python itself (as is the case for `pathlib` below), or in one of the dependencies that you have included. Here, you will be using `fastapi.staticfiles` to define a directory from which your server can serve pre-built files, like the `index.html` and `styles.css` files that you have just made.
+
+1. Make the following changes to the `main.py` script:
 
 ```python
 <i>from fastapi import FastAPI</i>
@@ -109,8 +113,11 @@ This tells any browser that the text in the `index.html` file is to be treated a
 </details>
 
 <details class="pivot" open>
-<summary>The `index.html` file as a client for the backend</summary>
-Now that you have seen how to get your server to deliver an HTML page, you are ready to modify `index.html` so that it sends an API request to your server. This is what you will do in the next section.
+<summary>What You've Just Learned</summary>
+You have seen how to get your server to deliver an HTML page, and the files that this HTML page needs to load, using
+`fastapi.staticfiles`.
+
+Now you are ready to modify `index.html` so that it sends an API request to your server. This is what you will do in the next section.
 
 </details>
 </section>
