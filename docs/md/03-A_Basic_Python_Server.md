@@ -1,7 +1,7 @@
 <!-- A Basic Python Server -->
 <section
-  id="A Basic Python Server"
-  aria-labelledby="A Basic Python Server"
+  id="#a-basic-python-server"
+  aria-labelledby="a-basic-python-server"
   data-item="A Basic Python Server"
 >
   <h2><a href="#a-basic-python-server">A Basic Python Server</a></h2>
@@ -37,7 +37,7 @@ The dot (.) as the first character of the name will make the `.venv` folder invi
 ::: {.os .mac}
 <details class="tldr">
 <summary>Contents of `.venv`</summary>
-```bash-w
+```zsh-w
 ./
 └── .venv/
     ├── .gitignore
@@ -65,33 +65,34 @@ The dot (.) as the first character of the name will make the `.venv` folder invi
 
 Currently, if you run the command...
 
-```bash-w
+::: {.os .mac}
+```zsh-w
 which python3
 ```
 ... the output will be something like:
 
-::: {.os .mac}
-```bash-w
+```zsh-w
 /Library/Frameworks/Python.framework/Versions/3.15/bin/python3
 ```
-:::
-
-::: {.os .win}
-```bash-w
-/c/Users/james/AppData/Local/Microsoft/WindowsApps/python3
-```
-:::
-
-::: {.os .mac}
 And if you run the command...
 
-```bash-w
+```zsh-w
 which python
 ```
 ... the output is likely to be:
 
-```bash-w
+```zsh-w
 python not found
+```
+:::
+
+::: {.os .win}
+```powershell-w
+which python
+```
+... the output will be something like:
+```powershell-w
+/c/Users/james/AppData/Local/Microsoft/WindowsApps/python
 ```
 :::
 
@@ -100,13 +101,32 @@ python not found
 The following command activates a virtual environment:
 
 ::: {.os .mac}
-```bash-w
+```zsh-w
 source .venv/bin/activate
+```
+Now, if you run the command...
+
+```zsh-w
+which python3
+```
+
+... the output will be something like:
+```zsh-w       
+/Users/full/path/to/event_assistant/.venv/bin/python3
+```
+
+And:
+```zsh-w
+which python
+```
+... will show something like:
+```zsh-w       
+<i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python
 ```
 :::
 
 ::: {.os .win}
-```bash-w
+```powershell-w
 .venv/Scripts/Activate.psl
 ```
 
@@ -114,62 +134,38 @@ source .venv/bin/activate
 <summary>Troubleshooting</summary>
 
 If you see an error message like...
-```bash-w
+```powershell-w
 File C:\Users\james\Documents\event_assistant\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system.
 ```
 ... don't worry. PowerShell's default execution policy blocks scripts (including the `Activate.ps1` file) from running to protect you from malicious code.
 
 To tell PowerShell that you know what you are doing, run this command once:
 
-```bash-w
+```powershell-w
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 This allows locally created scripts (like the venv activation script) to run. Simply run the command...
 
-```bash-w
+```powershell-w
 .venv/Scripts/Activate.psl
 ```
 
 ... again after you run the `Set-ExecutionPolicy...` command, and all should be good.
 
 </details>
-:::
 
-::: {.os .mac}
-Now, if you run the command...
-
-```bash-w
-which python3
-```
-
-... the output will be something like:
-```bash-w       
-/Users/full/path/to/event_assistant/.venv/bin/python3
-```
-
-And:
-```bash-w
-which python
-```
-... will show something like:
-```bash-w       
-<i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python
-```
-:::
-
-::: {.os .win}
 Now if you run the command ...
-```bash-w
+```powershell-w
 which python
 ```
 ... you should see something like:
 
-```bash-w       
+```powershell-w       
 <i>/c/Users/</i><b>full/path/to/event_assistant/.venv/Scripts/</b>python
 ```
 :::
 
-In other words, now that you have activated the virtual environment, python3 and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
+In other words, now that you have activated the virtual environment, python and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
 
 Your next step is to use `pip`, the Python package manager, to install FastAPI locally. If you did not use a virtual environment for all your projects, you would be forced to use the same globally installed version in all your other projects, too.
 
@@ -178,13 +174,13 @@ Your next step is to use `pip`, the Python package manager, to install FastAPI l
 Run the following command to install FastAPI with the standard extras that it needs to operate:
 
 ::: {.os .mac}
-```bash-w
+```zsh-w
 pip install "fastapi[standard]"
 ```
 :::
 
 ::: {.os .win}
-```bash-w
+```powershell-w
 $env:PYYAML_FORCE_LIBYAML="0"
 pip install "fastapi[standard]"
 ```
@@ -194,7 +190,7 @@ You should see a rush of text in the Terminal window as `pip` downloads the file
 ::: {.os .mac}
 <details class="tldr" >
 <summary>Updated contents of `.venv`</summary>
-```bash-w
+```zsh-w
 <i>./
 └── .venv/
     ├── .gitignore

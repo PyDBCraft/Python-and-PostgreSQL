@@ -24,7 +24,10 @@ The focus of this tutorial is on the API, so I will keep the frontend `index.htm
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
   <link rel="stylesheet" href="assets/styles.css">
   <title>Hello world!</title>
 </head>
@@ -103,10 +106,11 @@ Even in Safari, the Unicode text will be displayed correctly. This is because th
 ```
 This tells any browser that the text in the `index.html` file is to be treated an `UTF-8`
 
+</details>
+
 <details class="pivot" open>
 <summary>The `index.html` file as a client for the backend</summary>
 Now that you have seen how to get your server to deliver an HTML page, you are ready to modify `index.html` so that it sends an API request to your server. This is what you will do in the next section.
-</details>
 
 </details>
 </section>

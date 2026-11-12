@@ -39,6 +39,110 @@ content="width=device-width, initial-scale=1.0"
   <span class="next-name"></span>
 </nav>
 
+<section id="intro" aria-labelledby="intro" data-item="Introduction">
+<h2>
+<a href="#intro">Introduction</a>
+</h2>
+<p>Demand is growing for developers who can use AI to convert a natural
+language request into valid SQL to query a database.</p>
+<p>This tutorial is designed to help you build an “intelligent event
+assistant” for a web site similar to <a
+href="https://meetup.com/">MeetUp.com</a>. The ultimate goal is to allow
+end users to type a phrase like…</p>
+<ul>
+<li>“Find me a tech meetup next week that’s free.”</li>
+<li>“What events are happening near Jubilee metro station on Friday
+evening?”</li>
+<li>“Show me upcoming events about AI or databases.”</li>
+</ul>
+<p>… and have the backend convert this into a query for a database, and
+respond with a useful answer.</p>
+<p>It is written for someone who is comfortable with basic programming
+concepts and has used a database before, but has not yet built a web
+server.</p>
+<h3 id="a-two-part-tutorial">A Two-Part Tutorial</h3>
+<p>This tutorial is in two parts:</p>
+<ol type="1">
+<li>Create a backend that uses pre-defined queries for the database</li>
+<li>Add an AI layer that lets a Large Language Model create custom
+queries for the database.</li>
+</ol>
+<h3 id="toolchain">Toolchain</h3>
+<p>In building this first part of the project, you will be using the
+following tools:</p>
+<h4 id="the-stack">The Stack</h4>
+<ul>
+<li>Python 3: a scripting language to develop a server</li>
+<li>FastAPI: a framework for communicating between a browser and the
+server</li>
+<li>Uvicorn: a server to run the Python script and reload it after any
+changes</li>
+<li>PostgreSQL: a database to hold data about users, groups and
+meetings</li>
+<li>A database driver (psycopg2-binary) that lets Python talk to
+PostgreSQL</li>
+</ul>
+<h4 id="the-tooling">The Tooling</h4>
+<p>These are the optional tools that I use during development:</p>
+<ul>
+<li>Postman (for testing)</li>
+<li>Git (for collaboration and version control)</li>
+<li>Virtual Studio Code (for editing code)</li>
+</ul>
+<h3 id="teaching-approach">Teaching Approach</h3>
+<p>I do not assume that you have used any of these technologies before.
+I include detailed explanations of each concept in collapsible sections.
+If you are a beginner, you can open these and learn precisely what is
+happening at each step. If you are more advanced, you can skip over
+these collapsed sections.</p>
+<p>Some collapsible sections contain deliberately broken versions of the
+code, with a challenge to diagnose the problem before reading the
+explanation. These are optional; the mainline code always works.</p>
+<p>I am working on MacOS, and this will be visible from the screenshots.
+If you are working on a different operating system (such as Windows)
+some of the Terminal commands will be different from those shown in the
+screenshots. Always check the text to choose the right command to use
+for your operating system.</p>
+<figure>
+<img src="images/osFilter.webp" alt="Choose your operating system" />
+<figcaption aria-hidden="true">Choose your operating system</figcaption>
+</figure>
+<h3 id="steps">Steps</h3>
+<p>This is what you will do as you work through this first part of the
+tutorial:</p>
+<ol type="1">
+<li>Create a barebones Python server responds with “Hello World!”</li>
+<li>Adapt the server to return an HTML file that says “Hello
+World!”</li>
+<li>Modify the HTML file and see the change</li>
+<li>Add a button that shows an alert in the browser</li>
+<li>Make the button call the server; server responds with
+“Success!”</li>
+<li>Connect to PostgreSQL</li>
+<li>Design and create tables (users, groups, meetings)</li>
+<li>Insert dummy data (users, groups, meetings)</li>
+<li>Query the database from the server; return all users, then all
+meetings</li>
+<li>Add a form to query meetings by group or date; server returns
+filtered data</li>
+<li>Handle errors (empty form, invalid query)</li>
+<li>Register a user (form + server insert)</li>
+<li>Simplify “login”: store a user ID in a session/cookie, or hardcode a
+user for now</li>
+<li>Retrieve meetings for the logged-in user (join users → groups →
+meetings)</li>
+<li>Concept: validate AI-generated SQL before running it (only SELECT,
+allowed tables, no passwords)</li>
+</ol>
+<h3 id="part-two">Part Two</h3>
+<p>The second part of the tutorial will build on the work that you do
+here. In the second part, you will learn how to allow natural language
+input and convert it to SQL queries similar to those you already created
+manually.</p>
+<p>By the end, you will have a working natural-language interface to
+your database, and you will understand how to validate AI-generated SQL
+before running it.</p>
+</section>
 <!-- Work Environment -->
 <section id="work-environment" aria-labelledby="work-environment" data-item="Work Environment">
 <h2>
@@ -47,9 +151,38 @@ content="width=device-width, initial-scale=1.0"
 <p>You will need the following apps installed on your development
 computer in order to complete this tutorial. How you do this depends on
 your Operating System. Ensure that your Operating System is selected in
-the sidebar on the left:</p>
+the sidebar on the left.</p>
+<figure>
+<img src="images/osFilter.webp"
+alt="Show instructions for your preferred operating system" />
+<figcaption aria-hidden="true">Show instructions for your preferred
+operating system</figcaption>
+</figure>
+<h3 id="code-editor">Code Editor</h3>
+<p>You will need a code editor to create python, html and other scripts.
+A popular choice is Virtual Studio Code, which is free. You can <a
+href="https://code.visualstudio.com/download">download Virtual Studio
+Code here</a>.</p>
 <div class="os win">
-<h3 id="python-3">Python 3</h3>
+<details class="note" open>
+<summary>
+PowerShell
+</summary>
+<p>This tutorial assumes that you will be using PowerShell in your
+Windows Terminal in VS Code.</p>
+<p>Here are the steps to switch to PowerShell, if you have been using a
+different shell:</p>
+<ol type="1">
+<li>Open the Command Palette with <code>Ctrl + Shift + P</code>.</li>
+<li>Start typing <code>Terminal: Select Default Profile</code> and
+select it.</li>
+<li>Choose <code>PowerShell</code> (or
+<code>"Windows PowerShell"</code>) from the list that appears.</li>
+</ol>
+Important: Close the current terminal (click the trash can icon) and
+open a new one (Ctrl + `) for the change to take effect.
+</details>
+<h3 id="python">Python</h3>
 <p>You can <a href="https://www.python.org/downloads/">download
 Python</a> from the official website.</p>
 <figure>
@@ -76,12 +209,15 @@ alt="Checking that Python is available on the command line" />
 command line</figcaption>
 </figure>
 <h3 id="postgresql">PostgreSQL</h3>
+<p>You can <a
+href="https://www.postgresql.org/download/windows/">download PostgreSQL
+for Windows</a> from the official website.</p>
 </div>
 <div class="os mac">
-<h3 id="python">Python</h3>
+<h3 id="python-1">Python</h3>
 <p>You can <a href="https://www.python.org/downloads/">download
 Python</a> from the official website, or you can run:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">brew install python</code></pre>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">brew install python</code></pre>
 <p>After installation, you need to run a script to ensure Python 3 is
 recognized in your terminal:</p>
 <ul>
@@ -92,27 +228,16 @@ will configure your terminal to recognize the python3 command.</li>
 </ul>
 <p>To check that <code>python3</code> is available on the command line,
 run:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">python3 --version</code></pre>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">python3 --version</code></pre>
 <p>If Python 3 is installed correctly, you should see the version number
 displayed.</p>
 <h3 id="postgresql-1">PostgreSQL</h3>
 <p>To install PostgreSQL, and ensure that it is running, use the
 following commands:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">brew install postgresql@16
+<pre class="language-zsh wrap"><code class="language-zsh wrap">brew install postgresql@16
 brew services start postgresql@16</code></pre>
 </div>
-<!-- ```zsh-w
-python3 -m ensurepip --upgrade
-pip3 install psycopg2-binary
-python3 -c "import psycopg2; print(psycopg2.__version__)"
-which psql
-
-brew install postgresql@16
-brew services start postgresql@16
-
-createdb postgres_db
-``` -->
-<section id="python-1" class="os nux">
+<section id="python-2" class="os nux">
 <h3>Python</h3>
 <p>Python 3 is usually pre-installed. To make sure that you have the
 latest full version, run:</p>
@@ -125,12 +250,24 @@ displayed.</p>
 <p>You will also need <code>pip</code> for installing packages:</p>
 <pre class="language-command-line wrap"><code class="language-command-line wrap">sudo apt install -y python3-pip</code></pre>
 </section>
-<h3 id="vs-code">VS Code</h3>
-<a href="https://code.visualstudio.com/download">Download Virtual Studio
-Code</a>
+<h3 id="optional-tools">Optional Tools</h3>
+<p>You might also like to install:</p>
+<ul>
+<li><a href="https://www.postman.com/downloads/">Postman</a>, so that
+you can run automatic tests on your server</li>
+<li><a href="https://git-scm.com/install/mac">Git</a>, so that you can
+save your work to a developer platform like <a
+href="https://github.com/">GitHub</a>, <a
+href="https://gitlab.com">GitLab</a> or <a
+href="https://bitbucket.org/">Bitbucket</a>. Even if you only save your
+project locally, Git helps you make experiments and choose those that
+give the best results.</li>
+</ul>
+A Git repository containing the completed project will be available <a
+href="">here (eventually)</a>.
 </section>
 <!-- A Basic Python Server -->
-<section id="A Basic Python Server" aria-labelledby="A Basic Python Server" data-item="A Basic Python Server">
+<section id="#a-basic-python-server" aria-labelledby="a-basic-python-server" data-item="A Basic Python Server">
 <h2>
 <a href="#a-basic-python-server">A Basic Python Server</a>
 </h2>
@@ -177,7 +314,7 @@ everywhere, but your colleagues will not appreciate this.</p>
 <summary>
 Contents of <code>.venv</code>
 </summary>
-<pre class="language-bash wrap"><code class="language-bash wrap">./
+<pre class="language-zsh wrap"><code class="language-zsh wrap">./
 └── .venv/
     ├── .gitignore
     ├── bin/
@@ -200,66 +337,62 @@ Contents of <code>.venv</code>
 <h3 id="discovering-the-global-environment">Discovering the Global
 Environment</h3>
 <p>Currently, if you run the command…</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">which python3</code></pre>
-<p>… the output will be something like:</p>
 <div class="os mac">
-<pre class="language-bash wrap"><code class="language-bash wrap">/Library/Frameworks/Python.framework/Versions/3.15/bin/python3</code></pre>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">which python3</code></pre>
+<p>… the output will be something like:</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">/Library/Frameworks/Python.framework/Versions/3.15/bin/python3</code></pre>
+<p>And if you run the command…</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">which python</code></pre>
+<p>… the output is likely to be:</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">python not found</code></pre>
 </div>
 <div class="os win">
-<pre class="language-bash wrap"><code class="language-bash wrap">/c/Users/james/AppData/Local/Microsoft/WindowsApps/python3</code></pre>
-</div>
-<div class="os mac">
-<p>And if you run the command…</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">which python</code></pre>
-<p>… the output is likely to be:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">python not found</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">which python</code></pre>
+<p>… the output will be something like:</p>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">/c/Users/james/AppData/Local/Microsoft/WindowsApps/python</code></pre>
 </div>
 <h3 id="activitating-a-virtual-environment">Activitating a Virtual
 Environment</h3>
 <p>The following command activates a virtual environment:</p>
 <div class="os mac">
-<pre class="language-bash wrap"><code class="language-bash wrap">source .venv/bin/activate</code></pre>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">source .venv/bin/activate</code></pre>
+<p>Now, if you run the command…</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">which python3</code></pre>
+<p>… the output will be something like:</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">/Users/full/path/to/event_assistant/.venv/bin/python3</code></pre>
+<p>And:</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">which python</code></pre>
+<p>… will show something like:</p>
+<pre class="language-zsh wrap"><code class="language-zsh wrap"><i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python</code></pre>
 </div>
 <div class="os win">
-<pre class="language-bash wrap"><code class="language-bash wrap">.venv/Scripts/Activate.psl</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">.venv/Scripts/Activate.psl</code></pre>
 <details class="trouble">
 <summary>
 Troubleshooting
 </summary>
 <p>If you see an error message like…</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">File C:\Users\james\Documents\event_assistant\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system.</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">File C:\Users\james\Documents\event_assistant\.venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled on this system.</code></pre>
 <p>… don’t worry. PowerShell’s default execution policy blocks scripts
 (including the <code>Activate.ps1</code> file) from running to protect
 you from malicious code.</p>
 <p>To tell PowerShell that you know what you are doing, run this command
 once:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
 <p>This allows locally created scripts (like the venv activation script)
 to run. Simply run the command…</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">.venv/Scripts/Activate.psl</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">.venv/Scripts/Activate.psl</code></pre>
 <p>… again after you run the <code>Set-ExecutionPolicy...</code>
 command, and all should be good.</p>
 </details>
-</div>
-<div class="os mac">
-<p>Now, if you run the command…</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">which python3</code></pre>
-<p>… the output will be something like:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">/Users/full/path/to/event_assistant/.venv/bin/python3</code></pre>
-<p>And:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">which python</code></pre>
-<p>… will show something like:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap"><i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python</code></pre>
-</div>
-<div class="os win">
 <p>Now if you run the command …</p>
-<pre class="language-bash wrap"><code class="language-bash wrap">which python</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap">which python</code></pre>
 <p>… you should see something like:</p>
-<pre class="language-bash wrap"><code class="language-bash wrap"><i>/c/Users/</i><b>full/path/to/event_assistant/.venv/Scripts/</b>python</code></pre>
+<pre class="language-powershell wrap"><code class="language-powershell wrap"><i>/c/Users/</i><b>full/path/to/event_assistant/.venv/Scripts/</b>python</code></pre>
 </div>
 <p>In other words, now that you have activated the virtual environment,
-python3 and pip commands point to the copies inside .venv, instead of
-the system-wide ones. This is important, because different projects may
+python and pip commands point to the copies inside .venv, instead of the
+system-wide ones. This is important, because different projects may
 require different versions of the same custom package.</p>
 <p>Your next step is to use <code>pip</code>, the Python package
 manager, to install FastAPI locally. If you did not use a virtual
@@ -270,10 +403,10 @@ FastAPI in the Virtual Environment</h3>
 <p>Run the following command to install FastAPI with the standard extras
 that it needs to operate:</p>
 <div class="os mac">
-<pre class="language-bash wrap"><code class="language-bash wrap">pip install "fastapi[standard]"</code></pre>
+<pre class="language-zsh wrap"><code class="language-zsh wrap">pip install "fastapi[standard]"</code></pre>
 </div>
 <div class="os win">
-<pre class="language-bash wrap"><code class="language-bash wrap">$env:PYYAML_FORCE_LIBYAML="0"
+<pre class="language-powershell wrap"><code class="language-powershell wrap">$env:PYYAML_FORCE_LIBYAML="0"
 pip install "fastapi[standard]"</code></pre>
 </div>
 <p>You should see a rush of text in the Terminal window as
@@ -284,7 +417,7 @@ appear in your <code>.venv</code> directory.</p>
 <summary>
 Updated contents of <code>.venv</code>
 </summary>
-<pre class="language-bash wrap"><code class="language-bash wrap"><i>./
+<pre class="language-zsh wrap"><code class="language-zsh wrap"><i>./
 └── .venv/
     ├── .gitignore
     ├── bin/
@@ -482,7 +615,10 @@ files</h3>
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  &gt;
   &lt;link rel="stylesheet" href="assets/styles.css"&gt;
   &lt;title&gt;Hello world!&lt;/title&gt;
 &lt;/head&gt;
@@ -557,115 +693,150 @@ because the <code>index.html</code> file contains this tag:</p>
 <pre class="language-html line-numbers"><code class="language-html line-numbers">&lt;meta charset="UTF-8"&gt;</code></pre>
 <p>This tells any browser that the text in the <code>index.html</code>
 file is to be treated an <code>UTF-8</code></p>
+</details>
 <details class="pivot" open>
 <summary>
 The <code>index.html</code> file as a client for the backend
 </summary>
-Now that you have seen how to get your server to deliver an HTML page,
-you are ready to modify <code>index.html</code> so that it sends an API
-request to your server. This is what you will do in the next section.
-</details>
+<p>Now that you have seen how to get your server to deliver an HTML
+page, you are ready to modify <code>index.html</code> so that it sends
+an API request to your server. This is what you will do in the next
+section.</p>
 </details>
 </section>
-<section id="intro" aria-labelledby="intro" data-item="Introduction">
+<!-- Making an API Request -->
+<section id="making-an-api-request" aria-labelledby="making-an-api-request" data-item="Making an API Request">
 <h2>
-<a href="#intro">Introduction</a>
+<a href="#making-an-api-request">Making an API Request</a>
 </h2>
-<p>Demand is growing for developers who can use AI to convert a natural
-language request into valid SQL to query a database.</p>
-<p>This tutorial is designed to help you build an “intelligent event
-assistant” for a web site similar to <a
-href="https://meetup.com/">MeetUp.com</a>. The ultimate goal is to allow
-end users to type a phrase like…</p>
-<ul>
-<li>“Find me a tech meetup next week that’s free.”</li>
-<li>“What events are happening near Jubilee metro station on Friday
-evening?”</li>
-<li>“Show me upcoming events about AI or databases.”</li>
-</ul>
-<p>… and have the backend convert this into a query for a database, and
-respond with a useful answer.</p>
-<p>It is written for someone who is comfortable with basic programming
-concepts and has used a database before, but has not yet built a web
-server.</p>
-<h3 id="a-two-part-tutorial">A Two-Part Tutorial</h3>
-<p>This tutorial is in two parts:</p>
 <ol type="1">
-<li>Create a backend that uses pre-defined queries for the database</li>
-<li>Add an AI layer that lets a Large Language Model create custom
-queries for the database.</li>
+<li>Make the following changes to the <code>index.html</code> file, to
+add a button and way to show the response to a click on the button:</li>
 </ol>
-<h3 id="toolchain">Toolchain</h3>
-<p>In building this first part of the project, you will be using the
-following tools:</p>
-<h4 id="the-stack">The Stack</h4>
-<ul>
-<li>Python 3: a scripting language to develop a server</li>
-<li>FastAPI: a framework for communicating between a browser and the
-server</li>
-<li>Uvicorn: a server to run the Python script and reload it after any
-changes</li>
-<li>PostgreSQL: a database to hold data about users, groups and
-meetings</li>
-<li>A database driver (psycopg2-binary) that lets Python talk to
-PostgreSQL</li>
-</ul>
-<h4 id="the-tooling">The Tooling</h4>
-<p>These are the optional tools that I use during development:</p>
-<ul>
-<li>Postman (for testing)</li>
-<li>Git (for collaboration and version control)</li>
-<li>Virtual Studio Code (for editing code)</li>
-</ul>
-<h3 id="teaching-approach">Teaching Approach</h3>
-<p>I do not assume that you have used any of these technologies before.
-I include detailed explanations of each concept in collapsible sections.
-If you are a beginner, you can open these and learn precisely what is
-happening at each step. If you are more advanced, you can skip over
-these collapsed sections.</p>
-<p>Some collapsible sections contain deliberately broken versions of the
-code, with a challenge to diagnose the problem before reading the
-explanation. These are optional; the mainline code always works.</p>
-<p>I am working on MacOS, and this will be visible from the screenshots.
-If you are working on a different operating system (such as Windows or
-Ubuntu) some of the Terminal commands will be different from those shown
-in the screenshots. Always check the text to choose the right command to
-use for your operating system.</p>
-<h3 id="steps">Steps</h3>
-<p>This is what you will do as you work through this first part of the
-tutorial:</p>
-<ol type="1">
-<li>Create a barebones Python server responds with “Hello World!”</li>
-<li>Adapt the server to return an HTML file that says “Hello
-World!”</li>
-<li>Modify the HTML file and see the change</li>
-<li>Add a button that shows an alert in the browser</li>
-<li>Make the button call the server; server responds with
-“Success!”</li>
-<li>Connect to PostgreSQL</li>
-<li>Design and create tables (users, groups, meetings)</li>
-<li>Insert dummy data (users, groups, meetings)</li>
-<li>Query the database from the server; return all users, then all
-meetings</li>
-<li>Add a form to query meetings by group or date; server returns
-filtered data</li>
-<li>Handle errors (empty form, invalid query)</li>
-<li>Register a user (form + server insert)</li>
-<li>Simplify “login”: store a user ID in a session/cookie, or hardcode a
-user for now</li>
-<li>Retrieve meetings for the logged-in user (join users → groups →
-meetings)</li>
-<li>Concept: validate AI-generated SQL before running it (only SELECT,
-allowed tables, no passwords)</li>
+<pre class="language-html line-numbers"><code class="language-html line-numbers"><i>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  &gt;
+  &lt;link rel="stylesheet" href="assets/styles.css"&gt;</i><b>
+  &lt;script defer src="assets/script.js"&gt;&lt;/script&gt;
+  &lt;title&gt;API Request&lt;/title&gt;</b><i>
+&lt;/head&gt;
+&lt;body&gt;</i><b>
+  &lt;h3&gt;An API Request&lt;/h3&gt;
+  &lt;button
+    type="button"
+    id="get-time"
+  &gt;
+    Get Server Time
+  &lt;/button&gt;
+  &lt;p id="time"&gt;
+    Click the button
+  &lt;/p&gt;</b><i>
+&lt;/body&gt;
+&lt;/html&gt;</i></code></pre>
+<ol start="2" type="1">
+<li>Inside the <code>public/assets/</code> folder, create a file called
+<code>scripts.js</code></li>
+<li>Give it the following script:</li>
 </ol>
-<h3 id="part-two">Part Two</h3>
-<p>The second part of the tutorial will build on the work that you do
-here. In the second part, you will learn how to allow natural language
-input and convert it to SQL queries similar to those you already created
-manually.</p>
-<p>By the end, you will have a working natural-language interface to
-your database, and you will understand how to validate AI-generated SQL
-before running it.</p>
+<pre class="language-javascript line-numbers"><code class="language-javascript line-numbers">const button = document.getElementById("get-time")
+const time = document.getElementById("time")
+const endpoint = "/get_time"
+
+button.addEventListener("click", getTime)
+
+function getTime(params) {
+  fetch(endpoint)
+  .then(response =&gt; console.log("response:", response))
+}</code></pre>
+<ol start="4" type="1">
+<li>Refresh your browser page.</li>
+<li>Click on the button.</li>
+<li>Open the Developer Tools of your browser at the Console tab.</li>
+</ol>
+<figure>
+<img src="images/untimelyButton.webp"
+alt="The API request sent by the Get Server Time button receives no response" />
+<figcaption aria-hidden="true">The API request sent by the Get Server
+Time button receives no response</figcaption>
+</figure>
+<h3 id="whats-not-happening">What’s (Not) Happening</h3>
+<h3 id="getting-the-server-to-respond-to-the-request">Getting the Server
+to Respond to the Request</h3>
+<ol start="7" type="1">
+<li>Make the following changes to <code>main.py</code>:</li>
+</ol>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>from fastapi import FastAPI
+# Prepare to serve static files from a specific folder
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path</i><b>
+# Import a function to handle time
+from datetime import datetime</b><i>
+
+# Create an instance of the FastAPI app
+app = FastAPI()</i><b>
+
+# Respond to a request for "/get_time" with the time on the server
+@app.get("/get_time")
+async def get_time():
+    return {"time": datetime.now().isoformat()}</b><i>
+
+# Ensure that a request for "/" serves up "public/index.html"
+app.mount("/", StaticFiles(directory=Path("public"), html=True))</i></code></pre>
+<ol start="8" type="1">
+<li>Click on the Get Server Time button again, and observe how the
+response shown in the browser Console has changed.</li>
+</ol>
+<figure>
+<img src="images/untreatedTime.webp"
+alt="The server responds, but the client doesn’t treat the response" />
+<figcaption aria-hidden="true">The server responds, but the client
+doesn’t treat the response</figcaption>
+</figure>
+<h3 id="treating-the-response-in-the-client">Treating the Response in
+the client</h3>
+<ol start="9" type="1">
+<li>Make the following changes to the file at
+<code>public/assets/script.js</code>:</li>
+</ol>
+<pre class="language-javascript line-numbers"><code class="language-javascript line-numbers"><i>const button = document.getElementById("get-time")
+const watch = document.getElementById("watch")
+const endpoint = "/get_time"
+
+button.addEventListener("click", getTime)
+
+function getTime(params) {
+  fetch(endpoint)</i><b>
+  .then(response =&gt; response.json())
+  .then(displayServerTime)
+}
+
+function displayServerTime({ time }) {
+  watch.textContent = time
+}</b></code></pre>
+<ol start="10" type="1">
+<li>Click the Get Server Time button again and see the value that is
+displayed.</li>
+</ol>
+<figure>
+<img src="images/serverTime.webp"
+alt="Each time you click on the button, the displayed time changes" />
+<figcaption aria-hidden="true">Each time you click on the button, the
+displayed time changes</figcaption>
+</figure>
+</section>
+<!-- Connecting to a Database -->
+<section id="connecting-to-a-database" aria-labelledby="connecting-to-a-database" data-item="Connecting a Database">
+<h2>
+<a href="#connecting-to-a-database">Connecting to a Database</a>
+</h2>
+<div class="os mac">
+<p>Mac only</p>
+</div>
 </section>
 
 <div class="spacer"></div>
