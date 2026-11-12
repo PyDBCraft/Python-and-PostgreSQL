@@ -6,7 +6,6 @@
 >
   <h2><a href="#work-environment">Setting up your Work Environment</a></h2>
   
-
 You will need the following apps installed on your development computer in order to complete this tutorial. How you do this depends on your Operating System. Ensure that your Operating System is selected in the sidebar on the left.
 
 ![Show instructions for your preferred operating system](images/osFilter.webp)
@@ -41,8 +40,7 @@ This is important, because it allows you to run Python from the command line.
 
 ![Checking that Python is available on the command line](images/pythonVersion.webp)
 
-### PostgreSQL
-
+<h3 name="anchor-postgresql">PostgreSQL</h3>
 You can [download PostgreSQL for Windows](https://www.postgresql.org/download/windows/) from the official website.
 :::
 
@@ -67,7 +65,7 @@ python3 --version
 ```
 If Python 3 is installed correctly, you should see the version number displayed.
 
-### PostgreSQL
+<h3 name="anchor-postgremac">PostgreSQL</h3>
 
 To install PostgreSQL, and ensure that it is running, use the following commands:
 

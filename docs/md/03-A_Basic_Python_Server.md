@@ -1,6 +1,6 @@
 <!-- A Basic Python Server -->
 <section
-  id="#a-basic-python-server"
+  id="a-basic-python-server"
   aria-labelledby="a-basic-python-server"
   data-item="A Basic Python Server"
 >
@@ -88,11 +88,11 @@ python not found
 
 ::: {.os .win}
 ```powershell-w
-which python
+(Get-Command python).Source
 ```
 ... the output will be something like:
 ```powershell-w
-/c/Users/james/AppData/Local/Microsoft/WindowsApps/python
+C:\Users\james\AppData\Local\Microsoft\WindowsApps\python.exe
 ```
 :::
 
@@ -123,11 +123,18 @@ which python
 ```zsh-w       
 <i>/Users/</i><b>full/path/to/event_assistant/.venv/bin/</b>python
 ```
+
+<details class="note" open>
+<summary>Python3 or Python?</summary>
+
+MacOS uses the name `python3` for historical reasons. In the past, `python` was reserved for version 2 of the app. However, now that you have set up a virtual environment, where `python` is provided as an alias for `python3`, you can use plain `python` from now on.
+
+</details>
 :::
 
 ::: {.os .win}
 ```powershell-w
-.venv/Scripts/Activate.psl
+.\.venv\Scripts\Activate.ps1
 ```
 
 <details class="trouble">
@@ -147,7 +154,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 This allows locally created scripts (like the venv activation script) to run. Simply run the command...
 
 ```powershell-w
-.venv/Scripts/Activate.psl
+.\.venv\Scripts\Activate.ps1
 ```
 
 ... again after you run the `Set-ExecutionPolicy...` command, and all should be good.
@@ -156,20 +163,22 @@ This allows locally created scripts (like the venv activation script) to run. Si
 
 Now if you run the command ...
 ```powershell-w
-which python
+(Get-Command python).Source
 ```
 ... you should see something like:
 
 ```powershell-w       
-<i>/c/Users/</i><b>full/path/to/event_assistant/.venv/Scripts/</b>python
+<i>C:\Users\</i><b>full\path\to\event_assistant\.venv\Scripts</b>\python.exe
 ```
 :::
 
-In other words, now that you have activated the virtual environment, python and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
+### A Virtual Sandbox
 
-Your next step is to use `pip`, the Python package manager, to install FastAPI locally. If you did not use a virtual environment for all your projects, you would be forced to use the same globally installed version in all your other projects, too.
+Now that you have activated the virtual environment, python and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
 
 ### Installing FastAPI in the Virtual Environment
+
+Your next step is to use `pip`, the Python package manager, to install FastAPI locally. If you did not use a virtual environment for all your projects, you would be forced to use the same globally installed version in all your other projects, too.
 
 Run the following command to install FastAPI with the standard extras that it needs to operate:
 
@@ -185,12 +194,14 @@ $env:PYYAML_FORCE_LIBYAML="0"
 pip install "fastapi[standard]"
 ```
 :::
-You should see a rush of text in the Terminal window as `pip` downloads the files needed by FastAPI. These will appear in your `.venv` directory.
+
+You should see a rush of text in the Terminal window as `pip` downloads the files needed by FastAPI. These will be stored in your `.venv` directory, in `.venv/lib/python3.15/site-packages/` to be precise. Some command wrappers will be added to `.venv/bin/` so that you can call them directly from your Python scripts.
 
 ::: {.os .mac}
 <details class="tldr" >
 <summary>Updated contents of `.venv`</summary>
 ```zsh-w
+
 <i>./
 └── .venv/
     ├── .gitignore
@@ -223,6 +234,8 @@ You should see a rush of text in the Terminal window as `pip` downloads the file
     ├── include/
     ├── lib/
     │   └── python3.15/
+    │       └── site-packages/</i>
+    │           <b>└── PACKAGES INSTALLED BY pip GO HERE</b><i>
     └── pyvenv.cfg</i>
 ```
 </details>

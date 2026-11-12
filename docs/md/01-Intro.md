@@ -1,5 +1,5 @@
 ---
-title: Python-and-PostgreSQL
+title: Python and PostgreSQL
 subtitle: A backend for a MeetUp-like web app
 month: November 2026
 organization: PyDBCraft
