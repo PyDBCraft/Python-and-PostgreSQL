@@ -14,15 +14,6 @@ In <button class="os win anon" data-name="anchor-postgresql">section 2: Work Env
 ### Connecting to PostgreSQL
 Python needs a driver to interact with PostgreSQL. The package you need is `psycopg2-binary`. It will be installed as `psycopg`.
 
-<details class="trouble" open>
-<summary>No precompiled binary?</summary>
-`psycopg2-binary` is a pre-compiled version of the driver that does not require a C compiler or PostgreSQL development tools on most common systems (standard Windows, macOS, and Linux).
-
-However, binary packages are produced on a best-effort basis, and some platforms—such as Windows ARM64 (used by Parallels on Apple Silicon) or very new Python versions—may not have a wheel available yet.
-
-If `pip install psycopg2-binary` fails with an error mentioning `pg_config` or a missing compiler, this means that your platform does not yet have a pre-built binary, and you will need either to install the PostgreSQL development tools or to use the newer psycopg driver instead.
-
-</details>
 
 1. In a Terminal window open on your `event_assistant` project folder, run the command:
 ```bash-w
@@ -30,6 +21,16 @@ pip install psycopg2-binary
 ```
 
 This gets the Python package manager, `pip`, to download the files needed for the `psycopg2` driver for Python, and store them at <span class="os win anon">`.venv\Lib\site-packages\`</span><span class="os mac anon">`.venv/lib/python3.15/site-packages/`</span>.
+
+<details class="trouble">
+<summary>`pip install` error?</summary>
+`psycopg2-binary` is a pre-compiled version of the driver that does not require a C compiler or PostgreSQL development tools on most common systems (standard Windows, macOS, and Linux).
+
+However, binary packages are produced on a best-effort basis, and some platforms, such as Windows ARM64 (used by Parallels on Apple Silicon) or very new Python versions, may not have a wheel available yet.
+
+If `pip install psycopg2-binary` fails with an error mentioning `pg_config` or a missing compiler, this means that your platform does not yet have a pre-built binary, and you will need either to install the PostgreSQL development tools or to use the newer `psycopg` driver instead.
+
+</details>
 
 2. Use the command line to tell PostgreSQL to create a new database for you:
  
@@ -47,7 +48,7 @@ import psycopg2
 conn = psycopg2.connect(
     dbname="events_db",
     user="postgres",
-    password="<registered password>",
+    password="<YOUR REGISTERED PASSWORD>",
     host="localhost",
     port="5432"
 )

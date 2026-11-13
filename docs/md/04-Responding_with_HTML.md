@@ -13,7 +13,7 @@ FastAPI is designed first and foremost to handle API requests, where a client as
 
 The focus of this tutorial is on the API, so I will keep the frontend `index.html` as simple as possible.
 
-### A Simple `index.html` files
+### A Simple HTML file
 
 1. Create a folder called `public/` at the root of your `event_assistant` project folder.
 2. Inside the `public/` folder, create a file called `index.html`
@@ -68,7 +68,7 @@ This is what your `exent_assistant` project folder should look like now:
     └── index.html</b>
 ```
 
-### Updating `main.py`
+### Updating `main.py` {id=updating-main}
 
 Each dish that you cook requires its own tools and utensils. A well-stocked kitchen cupboard will provide these for you.
 

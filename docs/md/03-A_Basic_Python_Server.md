@@ -336,8 +336,8 @@ The line...
 
 ```python-#9
 async def read_root() -> str:
-    # Return a plain text response</i><b>
-    return "Hello world!"</b>
+    # Return a plain text response
+    return "Hello world!"
 ```
 
 ... applies specifically to a request for the root URL (`/`), and no other. For now, your server has no instructions about what to do for any other request, so it responds with the JSON string: `'{ "detail": "Not Found" }'`.

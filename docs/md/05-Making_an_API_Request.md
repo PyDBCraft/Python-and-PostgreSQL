@@ -171,7 +171,7 @@ In this section, you have:
 
 **You now have a server that can respond dynamically to a specific request.**
 
-In the next section, you will take a step to the side, to see how Python can connect to a PostgreSQL database. In the section after that, you will use your new knowledge to get your server to respond to a request for data from the database.
+In the next two section, you will take a step to the side, to see how Python can connect to a PostgreSQL database, and how to add data to the database. After that, you will use your new knowledge to get your server to respond to a request for data from the database.
 
 </details>
 

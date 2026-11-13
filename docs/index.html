@@ -577,8 +577,8 @@ alt="Any path other than the root / responds with “Not Found”" />
 <pre class="language-python line-numbers" data-start="8"><code class="language-python line-numbers">@app.get("/")</code></pre>
 <p>… ensures that the following command…</p>
 <pre class="language-python line-numbers" data-start="9"><code class="language-python line-numbers">async def read_root() -&gt; str:
-    # Return a plain text response</i><b>
-    return "Hello world!"</b></code></pre>
+    # Return a plain text response
+    return "Hello world!"</code></pre>
 <p>… applies specifically to a request for the root URL
 (<code>/</code>), and no other. For now, your server has no instructions
 about what to do for any other request, so it responds with the JSON
@@ -646,8 +646,7 @@ the ideal client for testing the API.</p>
 existing server to deliver this. </strong></p>
 <p>The focus of this tutorial is on the API, so I will keep the frontend
 <code>index.html</code> as simple as possible.</p>
-<h3 id="a-simple-index.html-files">A Simple <code>index.html</code>
-files</h3>
+<h3 id="a-simple-html-file">A Simple HTML file</h3>
 <ol type="1">
 <li>Create a folder called <code>public/</code> at the root of your
 <code>event_assistant</code> project folder.</li>
@@ -698,7 +697,7 @@ look like now:</p>
     ├── assets
     │   └── styles.css
     └── index.html</b></code></pre>
-<h3 id="updating-main.py">Updating <code>main.py</code></h3>
+<h3 id="updating-main">Updating <code>main.py</code></h3>
 <p>Each dish that you cook requires its own tools and utensils. A
 well-stocked kitchen cupboard will provide these for you.</p>
 <p>When you add a new feature to a Python project, you often need to use
@@ -955,10 +954,10 @@ stage the results of your changes.</li>
 </ol>
 <p><strong>You now have a server that can respond dynamically to a
 specific request.</strong></p>
-<p>In the next section, you will take a step to the side, to see how
-Python can connect to a PostgreSQL database. In the section after that,
-you will use your new knowledge to get your server to respond to a
-request for data from the database.</p>
+<p>In the next two section, you will take a step to the side, to see how
+Python can connect to a PostgreSQL database, and how to add data to the
+database. After that, you will use your new knowledge to get your server
+to respond to a request for data from the database.</p>
 </details>
 </section>
 <!-- Connecting to a Database -->
@@ -982,23 +981,6 @@ do it now, then return here.</p>
 <p>Python needs a driver to interact with PostgreSQL. The package you
 need is <code>psycopg2-binary</code>. It will be installed as
 <code>psycopg</code>.</p>
-<details class="trouble" open>
-<summary>
-No precompiled binary?
-</summary>
-<p><code>psycopg2-binary</code> is a pre-compiled version of the driver
-that does not require a C compiler or PostgreSQL development tools on
-most common systems (standard Windows, macOS, and Linux).</p>
-<p>However, binary packages are produced on a best-effort basis, and
-some platforms—such as Windows ARM64 (used by Parallels on Apple
-Silicon) or very new Python versions—may not have a wheel available
-yet.</p>
-<p>If <code>pip install psycopg2-binary</code> fails with an error
-mentioning <code>pg_config</code> or a missing compiler, this means that
-your platform does not yet have a pre-built binary, and you will need
-either to install the PostgreSQL development tools or to use the newer
-psycopg driver instead.</p>
-</details>
 <ol type="1">
 <li>In a Terminal window open on your <code>event_assistant</code>
 project folder, run the command:</li>
@@ -1009,6 +991,23 @@ the files needed for the <code>psycopg2</code> driver for Python, and
 store them at <span
 class="os win anon"><code>.venv\Lib\site-packages\</code></span><span
 class="os mac anon"><code>.venv/lib/python3.15/site-packages/</code></span>.</p>
+<details class="trouble">
+<summary>
+<code>pip install</code> error?
+</summary>
+<p><code>psycopg2-binary</code> is a pre-compiled version of the driver
+that does not require a C compiler or PostgreSQL development tools on
+most common systems (standard Windows, macOS, and Linux).</p>
+<p>However, binary packages are produced on a best-effort basis, and
+some platforms, such as Windows ARM64 (used by Parallels on Apple
+Silicon) or very new Python versions, may not have a wheel available
+yet.</p>
+<p>If <code>pip install psycopg2-binary</code> fails with an error
+mentioning <code>pg_config</code> or a missing compiler, this means that
+your platform does not yet have a pre-built binary, and you will need
+either to install the PostgreSQL development tools or to use the newer
+<code>psycopg</code> driver instead.</p>
+</details>
 <ol start="2" type="1">
 <li>Use the command line to tell PostgreSQL to create a new database for
 you:</li>
@@ -1025,7 +1024,7 @@ create a new script called <code>connect_db.py</code></li>
 conn = psycopg2.connect(
     dbname="events_db",
     user="postgres",
-    password="&lt;registered password&gt;",
+    password="&lt;YOUR REGISTERED PASSWORD&gt;",
     host="localhost",
     port="5432"
 )
@@ -1105,6 +1104,221 @@ What You’ve Just Learned
 PostgreSQL, run a query, and read the result.</p>
 <p>In the next section, you will create a table in the database and
 insert some data that you can later retrieve with a query.</p>
+</details>
+</section>
+<!-- Adding data -->
+<section id="adding-data" aria-labelledby="adding-data" data-item="Adding data to events_db">
+<h2>
+<a href="#adding-data">Adding data to <code>events_db</code></a>
+</h2>
+<p>Now that you have checked that your Python scripts can connect to
+your local PostgreSQL database, you are ready to add some data. To start
+with, you can add one simple table with a single row, and check that
+Python can read the data that it has added.</p>
+<ol type="1">
+<li>At the root of your <code>events_assistant</code> project folder,
+create a new file called <code>add_data.py</code></li>
+<li>Give it the following script:</li>
+</ol>
+<div class="os win">
+<pre class="language-python line-numbers"><code class="language-python line-numbers">import psycopg2
+
+# --- Connection settings ---
+conn = psycopg2.connect(
+    dbname="events_db",
+    user="postgres",
+    password="&lt;YOUR REGISTERED PASSWORD&gt;",
+    host="localhost",
+    port="5432"
+)
+cur = conn.cursor()
+
+# --- Create the table ---
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS meeting (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        location TEXT NOT NULL,
+        start_time TIMESTAMP NOT NULL
+    )
+""")
+conn.commit()
+print("Table 'meeting' is ready.")
+
+# --- Ensure the table is empty before adding a row ---
+cur.execute("TRUNCATE meeting RESTART IDENTITY;")
+conn.commit()
+
+# --- Insert one row ---
+cur.execute(
+    """
+    INSERT INTO meeting (title, location, start_time)
+    VALUES (%s, %s, %s)
+    RETURNING id
+    """,
+    ('Python for AI', 'Maker Lab', '2026-11-20 19:00:00')
+)
+new_id = cur.fetchone()[0]
+conn.commit()
+print(f"Inserted meeting with id={new_id}.")
+
+# --- Query all rows ---
+cur.execute("SELECT id, title, location, start_time FROM meeting")
+rows = cur.fetchall()
+print("\nAll meetings:")
+for row in rows:
+    print(row)
+
+# --- Clean up ---
+cur.close()
+conn.close()</code></pre>
+</div>
+<div class="os mac">
+<pre class="language-python line-numbers"><code class="language-python line-numbers">import psycopg2
+
+# --- Connection settings ---
+conn = psycopg2.connect(
+    dbname="events_db",
+    user="&lt;YOUR_USER_NAME&gt;",
+    host="localhost",
+    port="5432"
+)
+cur = conn.cursor()
+
+# --- Create the table ---
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS meeting (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        location TEXT NOT NULL,
+        start_time TIMESTAMP NOT NULL
+    )
+""")
+conn.commit()
+print("Table 'meeting' is ready.")
+
+# --- Ensure the table is empty before adding a row ---
+cur.execute("TRUNCATE meeting RESTART IDENTITY;")
+conn.commit()
+
+# --- Insert one row ---
+cur.execute(
+    """
+    INSERT INTO meeting (title, location, start_time)
+    VALUES (%s, %s, %s)
+    RETURNING id
+    """,
+    ('Python for AI', 'Maker Lab', '2026-11-20 19:00:00')
+)
+new_id = cur.fetchone()[0]
+conn.commit()
+print(f"Inserted meeting with id={new_id}.")
+
+# --- Query all rows ---
+cur.execute("SELECT id, title, location, start_time FROM meeting")
+rows = cur.fetchall()
+print("\nAll meetings:")
+for row in rows:
+    print(row)
+
+# --- Clean up ---
+cur.close()
+conn.close()</code></pre>
+</div>
+<ol start="3" type="1">
+<li>In a Terminal window open on your <code>event_assistant</code>
+project folder, run the command:</li>
+</ol>
+<pre class="language-bash wrap"><code class="language-bash wrap">python add_data.py</code></pre>
+<p>If all goes well, each time you run the script, you should see the
+following output in your Terminal:</p>
+<pre class="language-bash wrap"><code class="language-bash wrap">Table 'meeting' is ready.
+Inserted meeting with id=1.
+
+All meetings:
+(1, 'Python for AI', 'Maker Lab', datetime.datetime(2026, 11, 20, 19, 0))</code></pre>
+<details class="challenge" open>
+<summary>
+Add multiple rows
+</summary>
+<p>Here’s a challenge: Can you edit the <code>add_data.py</code> script
+so that you add multiple rows at once?</p>
+<p><strong>NOTE: The next section assumes that you have indeed inserted
+3 or more rows into the <code>events_db</code> database, using one of
+the solutions below, or your own solution.</strong></p>
+<details class="solution">
+<summary>
+Hints
+</summary>
+<p>Here are three possible solutions. Note that the code following the
+command…</p>
+<pre class="language-python wrap"><code class="language-python wrap">cur.execute...</code></pre>
+<p>… depend on what exactly was executed.</p>
+<h4 id="solution-1">Solution 1</h4>
+<pre class="language-python line-numbers" data-start="28"><code class="language-python line-numbers"># --- Insert multiple rows ---
+rows = [
+    ('Python for AI', 'Maker Lab', '2026-11-20 19:00:00'),
+    ('LLMs &amp; SQL', 'City Library', '2026-11-21 18:30:00'),
+    ('Database design', 'Café Olé', '2026-11-22 17:00:00')
+]
+
+cur.executemany("""
+    INSERT INTO meeting (title, location, start_time)
+    VALUES (%s, %s, %s)
+    """,
+    rows
+)
+conn.commit()
+print(f"Inserted {cur.rowcount} meetings.")</code></pre>
+<h4 id="solution-2">Solution 2</h4>
+<pre class="language-python line-numbers" data-start="28"><code class="language-python line-numbers"># --- Insert multiple rows ---
+cur.execute("""
+    INSERT INTO meeting (title, location, start_time)
+    VALUES
+        ('Python for AI', 'Maker Lab', '2026-11-20 19:00:00'),
+        ('LLMs &amp; SQL', 'City Library', '2026-11-21 18:30:00'),
+        ('Database design', 'Café Olé', '2026-11-22 17:00:00')
+""")
+conn.commit()
+print(f"Inserted {cur.rowcount} meetings.")</code></pre>
+<h4 id="solution-3">Solution 3</h4>
+<pre class="language-python line-numbers" data-start="28"><code class="language-python line-numbers"># --- Insert multiple rows ---
+cur.execute("""
+    INSERT INTO meeting (title, location, start_time)
+    VALUES
+        (%s, %s, %s),
+        (%s, %s, %s),
+        (%s, %s, %s)
+    RETURNING id
+    """,
+    (
+        "Python for AI", "Maker Lab", "2026-11-20 19:00:00",
+        "LLMs &amp; SQL", "City Library", "2026-11-21 18:30:00",
+        "Database design", "Café Olé", "2026-11-22 17:00:00",
+    )
+)
+new_ids = [row[0] for row in cur.fetchall()]
+conn.commit()
+print(f"Inserted meetings with ids={new_ids}.")</code></pre>
+</details>
+</details>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>In this section, you saw how to:</p>
+<ol type="1">
+<li>Add a new table to you database, if it does not exist yet</li>
+<li>Empty the table, so that it contains no rows, and so that new
+<code>id</code>s start at 1</li>
+<li>Insert a single row into the table</li>
+<li>Insert multiple rows into the table</li>
+<li>Create a query to read all rows in the table</li>
+</ol>
+<p>Now that your <code>events_db</code> database contains some data, you
+can modify the <code>main.py</code> server and the
+<code>index.html</code> file that it serves up, so that you can display
+data from the database in a browser client.</p>
 </details>
 </section>
 
