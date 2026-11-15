@@ -46,7 +46,7 @@ body {
   height: 100vh;
   margin: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   color: #ddd;
   background-color: #222;
