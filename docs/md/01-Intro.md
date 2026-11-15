@@ -24,7 +24,7 @@ This tutorial is designed to help you build an "intelligent event assistant" for
 
 It is written for someone who is comfortable with basic programming concepts and has used a database before, but has not yet built a web server.
 
-### A Three-Part Tutorial
+### A Four-Part Tutorial
 
 This tutorial is in four parts:
 
