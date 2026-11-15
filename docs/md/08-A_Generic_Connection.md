@@ -36,7 +36,7 @@ This means that, as you were creating the scripts, you had to think. You had to 
 
 Here's a way to simplify the process, and to ensure at the same time that your private data remains secret.
 
-### Creating a `.env` file
+<h3 id="creating_a_dot_env_file">Creating a `.env` file</h3>
 
 1. At the root of your `event_assistant` project directory, create a file named `.env`
 2. Give it the following text...

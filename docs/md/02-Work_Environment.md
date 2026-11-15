@@ -101,5 +101,5 @@ You might also like to install:
 * [Postman](https://www.postman.com/downloads/), so that you can run automatic tests on your server
 * [Git](https://git-scm.com/install/mac), so that you can save your work to a developer platform like [GitHub](https://github.com/), [GitLab](https://gitlab.com) or [Bitbucket](https://bitbucket.org/). Even if you only save your project locally, Git helps you make experiments and choose those that give the best results.
 
-A Git repository containing the completed project will be available [here (eventually)]().
+A Git repository containing the completed project is available [here](https://github.com/skhodki/proof-of-concept).
 </section>
