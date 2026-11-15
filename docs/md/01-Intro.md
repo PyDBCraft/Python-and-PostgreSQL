@@ -24,12 +24,13 @@ This tutorial is designed to help you build an "intelligent event assistant" for
 
 It is written for someone who is comfortable with basic programming concepts and has used a database before, but has not yet built a web server.
 
-### A Two-Part Tutorial
+### A Three-Part Tutorial
 
-This tutorial is in two parts:
+This tutorial is in three parts:
 
-1. Create a backend that uses pre-defined queries for the database
-2. Add an AI layer that lets a Large Language Model create custom queries for the database.
+1. Create a basic proof-of-concept pipeline that works for limited input
+2. Add an AI layer that gets a Large Language Model to create custom queries for the database
+3. Build a robust framework around the AI pipeline, improve accuracy and security
 
 ### Toolchain
 
@@ -67,23 +68,14 @@ This is what you will do as you work through this first part of the tutorial:
 
 1. Create a barebones Python server responds with "Hello World!"
 2. Adapt the server to return an HTML file that says "Hello World!"
-3. Modify the HTML file and see the change
-4. Add a button that shows an alert in the browser
-5. Make the button call the server; server responds with "Success!"
-6. Connect to PostgreSQL
-7. Design and create tables (users, groups, meetings)
-8. Insert dummy data (users, groups, meetings)
-9. Query the database from the server; return all users, then all meetings
-10. Add a form to query meetings by group or date; server returns filtered data
-11. Handle errors (empty form, invalid query)
-12. Register a user (form + server insert)
-13. Simplify "login": store a user ID in a session/cookie, or hardcode a user for now
-14. Retrieve meetings for the logged-in user (join users → groups → meetings)
-15. Concept: validate AI-generated SQL before running it (only  SELECT, allowed tables, no passwords)
-
-### Part Two
-The second part of the tutorial will build on the work that you do here. In the second part, you will learn how to allow natural language input and convert it to SQL queries similar to those you already created manually.
-
-By the end, you will have a working natural-language interface to your database, and you will understand how to validate AI-generated SQL before running it.
+3. Make the button in the HTML file that call the server; server responds with its local time
+4. Connect a Python script to PostgreSQL
+5. Add a table with dummy data to a Postgres database
+6. Insert dummy data (users, groups, meetings)
+7. Query the database from the HTML page to retrieve all meetings
+8. Create a script that simulates the response of an LLM and returns an SQL query
+9. Send a natural language question from the HTML page and retrieve the raw result
+10. Create a second script that simulates how an LLM could convert the raw result into a natural language answer
+11. Deploy this proof-of-concept server to a web host
 
 </section>

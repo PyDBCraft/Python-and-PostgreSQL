@@ -174,7 +174,7 @@ Now if you run the command ...
 
 ### A Virtual Sandbox
 
-Now that you have activated the virtual environment, python and pip commands point to the copies inside .venv, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
+Now that you have activated the virtual environment, `python` and `pip` commands point to the copies inside `.venv`, instead of the system-wide ones. This is important, because different projects may require different versions of the same custom package.
 
 ### Installing FastAPI in the Virtual Environment
 
@@ -262,6 +262,63 @@ async def read_root() -> str:
     # Return a plain text response
     return "Здравствуй, мир!"
 ```
+
+### Understanding the script
+
+The line ...
+
+```python-#5
+app = FastAPI()
+```
+... creates an instance of the FastAPI class. This class contains, amongst many other things, a routing table that allows you to connect a route (like "/") to a function (like `async def read_root()`).
+
+The line...
+
+```python-#8
+@app.get("/")
+```
+
+... tells the FastAPI instance that the function on the next line...
+
+```python-#9
+async def read_root() -> str:
+    # Return a plain text response
+    return "Здравствуй, мир!"
+```
+
+... should be added to the routing table. As a result, when a client makes a request for the `/` route, the `read_root()` function is called.
+
+<details class="note" open>
+<summary>Synchronous and asynchronous code</summary>
+When you call someone on the phone, they can answer you immediately. When you send someone an SMS, they might not see it immediately, and they might take some time before answering. While you are waiting for a reply, you can continue to do other things. 
+
+A phone call is synchronous. An SMS is asynchronous, or `async` for short.
+
+When your server receives a request for a particular route, it may be able to answer immediately, as it does in this case. But in other cases, it may have to send its own request to a database, and wait for the database to reply.
+
+The lines ...
+
+```python
+from fastapi import FastAPI
+app = FastAPI()
+@app.get("/")
+```
+
+... are synchronous. Python runs each line completely before moving on to the next.
+
+The function...
+
+```python-#9
+async def read_root() -> str:
+    # Return a plain text response
+    return "Здравствуй, мир!"
+```
+
+... is asynchronous. Python notes that this function must be run, but it may wait for other background tasks to complete first. After acknowledging the `async` function, Python can run the next line of code immediately. In this case, however, there is no "next line of code", so all that happens is that Python runs the `read_root()` function at its earliest convenience.
+
+</details>
+
+### Launching your Server
 
 To launch this simple server, run the command:
 

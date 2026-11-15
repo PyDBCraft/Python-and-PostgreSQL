@@ -1,10 +1,10 @@
 <!-- Adding data -->
 <section
-  id="adding-data"
-  aria-labelledby="adding-data"
-  data-item="Adding data to events_db"
+  id="adding-data-to-a-table"
+  aria-labelledby="adding-data-to-a-table"
+  data-item="Adding Data to a Table"
 >
-  <h2><a href="#adding-data">Adding data to `events_db`</a></h2>
+  <h2><a href="#adding-data">Adding Data to a Table</a></h2>
 
 Now that you have checked that your Python scripts can connect to your local PostgreSQL database, you are ready to add some data. To start with, you can add one simple table with a single row, and check that Python can read the data that it has added.
 

@@ -60,12 +60,15 @@ respond with a useful answer.</p>
 <p>It is written for someone who is comfortable with basic programming
 concepts and has used a database before, but has not yet built a web
 server.</p>
-<h3 id="a-two-part-tutorial">A Two-Part Tutorial</h3>
-<p>This tutorial is in two parts:</p>
+<h3 id="a-three-part-tutorial">A Three-Part Tutorial</h3>
+<p>This tutorial is in three parts:</p>
 <ol type="1">
-<li>Create a backend that uses pre-defined queries for the database</li>
-<li>Add an AI layer that lets a Large Language Model create custom
-queries for the database.</li>
+<li>Create a basic proof-of-concept pipeline that works for limited
+input</li>
+<li>Add an AI layer that gets a Large Language Model to create custom
+queries for the database</li>
+<li>Build a robust framework around the AI pipeline, improve accuracy
+and security</li>
 </ol>
 <h3 id="toolchain">Toolchain</h3>
 <p>In building this first part of the project, you will be using the
@@ -120,34 +123,20 @@ tutorial:</p>
 <li>Create a barebones Python server responds with “Hello World!”</li>
 <li>Adapt the server to return an HTML file that says “Hello
 World!”</li>
-<li>Modify the HTML file and see the change</li>
-<li>Add a button that shows an alert in the browser</li>
-<li>Make the button call the server; server responds with
-“Success!”</li>
-<li>Connect to PostgreSQL</li>
-<li>Design and create tables (users, groups, meetings)</li>
+<li>Make the button in the HTML file that call the server; server
+responds with its local time</li>
+<li>Connect a Python script to PostgreSQL</li>
+<li>Add a table with dummy data to a Postgres database</li>
 <li>Insert dummy data (users, groups, meetings)</li>
-<li>Query the database from the server; return all users, then all
-meetings</li>
-<li>Add a form to query meetings by group or date; server returns
-filtered data</li>
-<li>Handle errors (empty form, invalid query)</li>
-<li>Register a user (form + server insert)</li>
-<li>Simplify “login”: store a user ID in a session/cookie, or hardcode a
-user for now</li>
-<li>Retrieve meetings for the logged-in user (join users → groups →
-meetings)</li>
-<li>Concept: validate AI-generated SQL before running it (only SELECT,
-allowed tables, no passwords)</li>
+<li>Query the database from the HTML page to retrieve all meetings</li>
+<li>Create a script that simulates the response of an LLM and returns an
+SQL query</li>
+<li>Send a natural language question from the HTML page and retrieve the
+raw result</li>
+<li>Create a second script that simulates how an LLM could convert the
+raw result into a natural language answer</li>
+<li>Deploy this proof-of-concept server to a web host</li>
 </ol>
-<h3 id="part-two">Part Two</h3>
-<p>The second part of the tutorial will build on the work that you do
-here. In the second part, you will learn how to allow natural language
-input and convert it to SQL queries similar to those you already created
-manually.</p>
-<p>By the end, you will have a working natural-language interface to
-your database, and you will understand how to validate AI-generated SQL
-before running it.</p>
 </section>
 <!-- Work Environment -->
 <section id="work-environment" aria-labelledby="work-environment" data-item="Work Environment">
@@ -156,7 +145,7 @@ before running it.</p>
 </h2>
 <p>You will need the following apps installed on your development
 computer in order to complete this tutorial. How you do this depends on
-your Operating System. Ensure that your Operating System is selected in
+your Operating System. Ensure that your operating system is selected in
 the sidebar on the left.</p>
 <figure>
 <img src="images/osFilter.webp"
@@ -411,10 +400,11 @@ command, and all should be good.</p>
 <pre class="language-powershell wrap"><code class="language-powershell wrap"><i>C:\Users\</i><b>full\path\to\event_assistant\.venv\Scripts</b>\python.exe</code></pre>
 </div>
 <h3 id="a-virtual-sandbox">A Virtual Sandbox</h3>
-<p>Now that you have activated the virtual environment, python and pip
-commands point to the copies inside .venv, instead of the system-wide
-ones. This is important, because different projects may require
-different versions of the same custom package.</p>
+<p>Now that you have activated the virtual environment,
+<code>python</code> and <code>pip</code> commands point to the copies
+inside <code>.venv</code>, instead of the system-wide ones. This is
+important, because different projects may require different versions of
+the same custom package.</p>
 <h3 id="installing-fastapi-in-the-virtual-environment">Installing
 FastAPI in the Virtual Environment</h3>
 <p>Your next step is to use <code>pip</code>, the Python package
@@ -499,6 +489,54 @@ app = FastAPI()
 async def read_root() -&gt; str:
     # Return a plain text response
     return "Здравствуй, мир!"</code></pre>
+<h3 id="understanding-the-script">Understanding the script</h3>
+<p>The line …</p>
+<pre class="language-python line-numbers" data-start="5"><code class="language-python line-numbers">app = FastAPI()</code></pre>
+<p>… creates an instance of the FastAPI class. This class contains,
+amongst many other things, a routing table that allows you to connect a
+route (like “/”) to a function (like
+<code>async def read_root()</code>).</p>
+<p>The line…</p>
+<pre class="language-python line-numbers" data-start="8"><code class="language-python line-numbers">@app.get("/")</code></pre>
+<p>… tells the FastAPI instance that the function on the next line…</p>
+<pre class="language-python line-numbers" data-start="9"><code class="language-python line-numbers">async def read_root() -&gt; str:
+    # Return a plain text response
+    return "Здравствуй, мир!"</code></pre>
+<p>… should be added to the routing table. As a result, when a client
+makes a request for the <code>/</code> route, the
+<code>read_root()</code> function is called.</p>
+<details class="note" open>
+<summary>
+Synchronous and asynchronous code
+</summary>
+<p>When you call someone on the phone, they can answer you immediately.
+When you send someone an SMS, they might not see it immediately, and
+they might take some time before answering. While you are waiting for a
+reply, you can continue to do other things.</p>
+<p>A phone call is synchronous. An SMS is asynchronous, or
+<code>async</code> for short.</p>
+<p>When your server receives a request for a particular route, it may be
+able to answer immediately, as it does in this case. But in other cases,
+it may have to send its own request to a database, and wait for the
+database to reply.</p>
+<p>The lines …</p>
+<pre class="language-python line-numbers"><code class="language-python line-numbers">from fastapi import FastAPI
+app = FastAPI()
+@app.get("/")</code></pre>
+<p>… are synchronous. Python runs each line completely before moving on
+to the next.</p>
+<p>The function…</p>
+<pre class="language-python line-numbers" data-start="9"><code class="language-python line-numbers">async def read_root() -&gt; str:
+    # Return a plain text response
+    return "Здравствуй, мир!"</code></pre>
+<p>… is asynchronous. Python notes that this function must be run, but
+it may wait for other background tasks to complete first. After
+acknowledging the <code>async</code> function, Python can run the next
+line of code immediately. In this case, however, there is no “next line
+of code”, so all that happens is that Python runs the
+<code>read_root()</code> function at its earliest convenience.</p>
+</details>
+<h3 id="launching-your-server">Launching your Server</h3>
 <p>To launch this simple server, run the command:</p>
 <pre class="language-bash wrap"><code class="language-bash wrap">fastapi dev main.py</code></pre>
 <p>You should see the following output (and more) in the Terminal:</p>
@@ -954,10 +992,10 @@ stage the results of your changes.</li>
 </ol>
 <p><strong>You now have a server that can respond dynamically to a
 specific request.</strong></p>
-<p>In the next two section, you will take a step to the side, to see how
-Python can connect to a PostgreSQL database, and how to add data to the
-database. After that, you will use your new knowledge to get your server
-to respond to a request for data from the database.</p>
+<p>In the next two sections, you will take a step to the side, to see
+how Python can connect to a PostgreSQL database, and how to add data to
+the database. After that, you will use your new knowledge to get your
+server to respond to a request for data from the database.</p>
 </details>
 </section>
 <!-- Connecting to a Database -->
@@ -1107,9 +1145,9 @@ insert some data that you can later retrieve with a query.</p>
 </details>
 </section>
 <!-- Adding data -->
-<section id="adding-data" aria-labelledby="adding-data" data-item="Adding data to events_db">
+<section id="adding-data-to-a-table" aria-labelledby="adding-data-to-a-table" data-item="Adding Data to a Table">
 <h2>
-<a href="#adding-data">Adding data to <code>events_db</code></a>
+<a href="#adding-data">Adding Data to a Table</a>
 </h2>
 <p>Now that you have checked that your Python scripts can connect to
 your local PostgreSQL database, you are ready to add some data. To start
@@ -1319,6 +1357,318 @@ What You’ve Just Learned
 can modify the <code>main.py</code> server and the
 <code>index.html</code> file that it serves up, so that you can display
 data from the database in a browser client.</p>
+</details>
+</section>
+<!-- A Generic Connection -->
+<section id="a-generic-connection" aria-labelledby="a-generic-connection" data-item="A Generic Connection">
+<h2>
+<a href="#a-generic-connection">A Generic Connection</a>
+</h2>
+<p>Did you notice that you used the same code in both of the last two
+scripts:</p>
+<div class="os win">
+<pre class="language-python wrap"><code class="language-python wrap">conn = psycopg2.connect(
+    dbname="events_db",
+    user="postgres",
+    password="&lt;YOUR REGISTERED PASSWORD&gt;",
+    host="localhost",
+    port="5432"
+)</code></pre>
+</div>
+<div class="os mac">
+<pre class="language-python wrap"><code class="language-python wrap">conn = psycopg2.connect(
+    dbname="events_db",
+    user="&lt;YOUR_USER_NAME&gt;",
+    host="localhost",
+    port="5432"
+)</code></pre>
+</div>
+<p>This means that, as you were creating the scripts, you had to think.
+You had to replace <span
+class="os win anon"><code>&lt;YOUR REGISTERED PASSWORD&gt;</code></span><span
+class="os mac anon"><code>&lt;YOUR_USER_NAME&gt;</code></span> with the
+correct value for your system.</p>
+<p>Here’s a way to simplify the process, and to ensure at the same time
+that your private data remains secret.</p>
+<h3 id="creating-a-.env-file">Creating a <code>.env</code> file</h3>
+<ol type="1">
+<li>At the root of your <code>events_assistant</code> project directory,
+create a file named <code>.env</code></li>
+<li>Give it the following text…</li>
+</ol>
+<div class="os win">
+<pre class="language-tex line-numbers"><code class="language-tex line-numbers">DB_NAME=events_db
+DB_USER=postrgres
+DB_password=&lt;YOUR REGISTERED PASSWORD&gt;
+DB_HOST=localhost
+DB_PORT=5432</code></pre>
+<p>… except that instead of
+<code>&lt;YOUR REGISTERED PASSWORD&gt;</code>, you write the actual
+password that you set when you installed PostgreSQL.</p>
+</div>
+<div class="os mac">
+<pre class="language-tex line-numbers"><code class="language-tex line-numbers">DB_NAME=events_db
+DB_USER=&lt;YOUR_USER_NAME&gt;
+DB_PASSWORD=
+DB_HOST=localhost
+DB_PORT=5432</code></pre>
+<p>… except that instead of <code>&lt;YOUR_USER_NAME&gt;</code>, you
+write your actual Mac user name. Note that <code>DB_PASSWORD</code> is
+given, but it is assigned no value.</p>
+</div>
+<h3 id="a-hidden-file">A Hidden File</h3>
+<p>Because the name of the <code>.env</code> file starts with a dot
+(<code>.</code>), your operating system will keep it hidden. When you
+copy the contents of the folder, <code>.env</code> will not be
+copied.</p>
+<p>If you are using Git, you should ensure that your (hidden)
+<code>.gitignore</code> file contains a line for <code>.env</code>. This
+guarantees that Git will not push the <code>.env</code> file to a remote
+repository, where others might find it.</p>
+<h3 id="creating-a-config.py-script">Creating a <code>config.py</code>
+Script</h3>
+<ol type="1">
+<li>At the root of your <code>events_assistant</code> project directory,
+create a file named <code>config.py</code></li>
+<li>Give it the following text…</li>
+</ol>
+<pre class="language-python line-numbers"><code class="language-python line-numbers">from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    db_name: str
+    db_user: str
+    db_password: str
+    db_host: str = "localhost"
+    db_port: int = 5432
+
+    model_config = SettingsConfigDict(env_file=".env")
+
+settings = Settings()</code></pre>
+<p>When you run this script, it will read in the data from your
+<code>.env</code> file and create a dict called <code>settings</code>
+which contains the data from <code>.env</code>. Note that it will set
+values for <code>db_host</code> and <code>db_port</code> by default, so
+even if these values are missing in your <code>.env</code>, they will be
+present in <code>settings</code>.</p>
+<h3 id="importing-settings-from-the-config.py-script">Importing
+<code>settings</code> from the <code>config.py</code> Script</h3>
+<p>Edit your <code>connect_db.py</code> and <code>add_data.py</code>
+scripts as follows:</p>
+<h4 id="connect_db.py"><code>connect_db.py</code></h4>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>import psycopg2</i>
+<b>from config import settings
+
+conn = psycopg2.connect(
+    dbname=settings.db_name,
+    user=settings.db_user,
+    password=settings.db_password,
+    host=settings.db_host,
+    port=settings.db_port
+)</b><i>
+cur = conn.cursor()
+cur.execute("SELECT 1")
+print(cur.fetchone())
+cur.close()
+conn.close()</i></code></pre>
+<h4 id="add_data.py"><code>add_data.py</code></h4>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>import psycopg2</i>
+<b>from config import settings
+
+# --- Connect to database ---
+conn = psycopg2.connect(
+    dbname=settings.db_name,
+    user=settings.db_user,
+    password=settings.db_password,
+    host=settings.db_host,
+    port=settings.db_port
+)</b>
+<i>cur = conn.cursor()
+
+# --- Ensure that a "meetings" table exists
+cur.execute("""</i></code></pre>
+<pre class="language-python wrap"><code class="language-python wrap">     ... and so on</code></pre>
+<p>OK. So this actually makes your scripts <em>longer</em> than the
+originals, but now they are generic. If you need to change the
+connection details for your project, you can change them in one place,
+and the changes will apply everywhere, and this works for both Windows
+and MacOS.</p>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>Hard-coding data makes your code fragile, especially if the same data
+needs to be used in different places in your code. In most cases, it is
+good to apply the DRY principle: Don’t Repeat Yourself.</p>
+<p>Creating the <code>.env</code> and <code>config.py</code> files means
+that your project is more robust.</p>
+<p>In the next section, you can use
+<code>from config import settings</code> and the new arguments for
+<code>psycopg2.connect()</code> call to avoid having to hard-code your
+personal data again.</p>
+</details>
+</section>
+<!-- A Query from a Client -->
+<section id="a-query-from-a-client" aria-labelledby="a-query-from-a-client" data-item="A Query from a Client">
+<h2>
+<a href="#a-query-from-a-client">A Query from a Client</a>
+</h2>
+<p>Now that the <code>events_db</code> database in PostgreSQL contains a
+<code>meetings</code> table with some dummy data, you can update your
+project so that you can retrieve this data from your browser, display
+it.</p>
+<h3 id="updating-the-client">Updating the Client</h3>
+<p>First, you need to edit <code>index.html</code> and
+<code>assets/script.js</code> so that your web page makes a
+<code>POST</code> request to your server.</p>
+<p>You can remove the previous button that requested the server time, as
+this has now served its purpose.</p>
+<h4 id="publicindex.html"><code>public/index.html</code></h4>
+<pre class="language-html line-numbers"><code class="language-html line-numbers"><i>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  &gt;
+  &lt;link rel="stylesheet" href="assets/styles.css"&gt;
+  &lt;script defer src="assets/script.js"&gt;&lt;/script&gt;
+  &lt;title&gt;API Request&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h3&gt;API Request&lt;/h3&gt;</i><b>
+  &lt;p id="query"&gt;SELECT * FROM meetings&lt;/p&gt;
+  &lt;button
+    type="button"
+    id="treat_query"
+  &gt;
+    Treat Query
+  &lt;/button&gt;
+  &lt;pre id="result"&gt;
+    Click the button to get data from the database
+  &lt;/pre&gt;</b><i>
+&lt;/body&gt;
+&lt;/html&gt;</i></code></pre>
+<h4 id="publicassetsscript.js"><code>public/assets/script.js</code></h4>
+<pre class="language-javascript line-numbers"><code class="language-javascript line-numbers">// Read data from the server
+const queryP = document.getElementById("query")
+const button = document.getElementById("treat_query")
+const result = document.getElementById("result")
+const endPoint = "/treat_query"
+
+button.addEventListener("click", treatQuery)
+
+function treatQuery() {
+  const query = queryP.textContent
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ query })
+  }
+  fetch(endPoint, options)
+  .then(response =&gt; response.json())
+  .then(displayResults)
+}
+
+function displayResults(results) {
+  result.textContent = JSON.stringify(results, null, '  ')
+}</code></pre>
+<h3 id="updating-the-server">Updating the server</h3>
+<p>Here are the changes you should make to <code>main.py</code>. Note
+that you are now importing <code>settings</code> from
+<code>config.py</code> and using this to create the connection with the
+database.</p>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>from fastapi import FastAPI
+# Prepare to serve static files from a specific folder
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path</i>
+<b># Prepare to read an incoming post message
+from pydantic import BaseModel
+# Prepare to connect to PostgreSQL
+import psycopg2
+from config import settings</b><i>
+
+# Create an instance of the FastAPI app
+app = FastAPI()</i>
+
+<b># Respond to a request for "/treat_query" with data from the database
+class QueryRequest(BaseModel):
+    query: str
+
+@app.post("/treat_query")
+async def treat_query(request: QueryRequest):
+    conn = psycopg2.connect(<u>
+        dbname=settings.db_name,
+        user=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port</u>
+    )
+    try:
+        cur = conn.cursor()
+        cur.execute(request.query) # !!! UNTRUSTED QUERY !!!
+        rows = cur.fetchall()
+        return [
+           {"id": r[0], "title": r[1], "location": r[2], "start_time": r[3].isoformat()}
+           for r in rows
+        ]
+    finally:
+        cur.close()
+        conn.close()</b><i>
+
+# Ensure that a request for "/" serves up "public/index.html"
+app.mount("/", StaticFiles(directory=Path("public"), html=True))</i></code></pre>
+<details class="note" open>
+<summary>
+<code>BaseModel</code> from <code>pydantic</code>
+</summary>
+<p><code>pydantic</code> is a validation library. Its BaseModel class
+ensures that a given datum has the expected format.</p>
+<p>In this case…</p>
+<pre class="language-python line-numbers" data-start="15"><code class="language-python line-numbers">class QueryRequest(BaseModel):
+    query: str</code></pre>
+<p>… ensures that the data parsed from the incoming <code>request</code>
+ensures that the parsed data has a key named <code>query</code> whose
+value is a string. This means that the line…</p>
+<pre class="language-python line-numbers" data-start="29"><code class="language-python line-numbers">execute(request.query) # !!! UNTRUSTED QUERY !!!</code></pre>
+<p>… will not fail due to the format of <code>request.query</code>.
+However, it <strong>does not</strong> guarantee that this line will fail
+because <code>request.query</code> is ill-formed or malicious SQL.
+Because you explicitly designed the <code>request.query</code> to be
+“SELECT * FROM meetings”, these last two issues are not a problem here.
+For a production-ready server, you will need to deal with them.</p>
+</details>
+<h3 id="testing-your-code">Testing Your Code</h3>
+<ol type="1">
+<li>In your Terminal window, run</li>
+</ol>
+<pre class="language-bash wrap"><code class="language-bash wrap">fastapi dev main.py</code></pre>
+<ol start="2" type="1">
+<li>Ctrl-click or Cmd-click on the link to <a
+href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> which is logged
+to the console</li>
+<li>Click on the Treat Query button.</li>
+</ol>
+<figure>
+<img src="images/treatQuery.webp"
+alt="Retrieving data from the server" />
+<figcaption aria-hidden="true">Retrieving data from the
+server</figcaption>
+</figure>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>In this section, you have seen how to send a pre-defined SQL query to
+the server, and have the server respond with raw data from the rows it
+requested from the database.</p>
+<p>This is fine in a proof-of-concept, but it is not secure. In
+particular, the server should never trust data sent from a client.</p>
+<p>In the next section, you will see how to send a natural language
+question instead of an SQL query. As you will see, this will simply
+displace the security problem; it will not solve it.</p>
 </details>
 </section>
 

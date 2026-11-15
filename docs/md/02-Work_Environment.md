@@ -6,7 +6,7 @@
 >
   <h2><a href="#work-environment">Setting up your Work Environment</a></h2>
   
-You will need the following apps installed on your development computer in order to complete this tutorial. How you do this depends on your Operating System. Ensure that your Operating System is selected in the sidebar on the left.
+You will need the following apps installed on your development computer in order to complete this tutorial. How you do this depends on your Operating System. Ensure that your operating system is selected in the sidebar on the left.
 
 ![Show instructions for your preferred operating system](images/osFilter.webp)
 
