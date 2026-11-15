@@ -38,7 +38,7 @@ Here's a way to simplify the process, and to ensure at the same time that your p
 
 ### Creating a `.env` file
 
-1. At the root of your `events_assistant` project directory, create a file named `.env`
+1. At the root of your `event_assistant` project directory, create a file named `.env`
 2. Give it the following text...
 
 ::: {.os .win}
@@ -71,7 +71,7 @@ If you are using Git, you should ensure that your (hidden) `.gitignore` file con
 
 ### Creating a `config.py` Script
 
-1. At the root of your `events_assistant` project directory, create a file named `config.py`
+1. At the root of your `event_assistant` project directory, create a file named `config.py`
 2. Give it the following text...
 
 ```python

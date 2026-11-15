@@ -26,11 +26,12 @@ It is written for someone who is comfortable with basic programming concepts and
 
 ### A Three-Part Tutorial
 
-This tutorial is in three parts:
+This tutorial is in four parts:
 
 1. Create a basic proof-of-concept pipeline that works for limited input
 2. Add an AI layer that gets a Large Language Model to create custom queries for the database
 3. Build a robust framework around the AI pipeline, improve accuracy and security
+4. Add all the features that end-users will expect from such an app.
 
 ### Toolchain
 
@@ -76,6 +77,5 @@ This is what you will do as you work through this first part of the tutorial:
 8. Create a script that simulates the response of an LLM and returns an SQL query
 9. Send a natural language question from the HTML page and retrieve the raw result
 10. Create a second script that simulates how an LLM could convert the raw result into a natural language answer
-11. Deploy this proof-of-concept server to a web host
 
 </section>

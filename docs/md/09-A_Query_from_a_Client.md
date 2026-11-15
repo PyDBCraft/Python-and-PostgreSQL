@@ -142,7 +142,7 @@ execute(request.query) # !!! UNTRUSTED QUERY !!!
 
 </details>
 
-### Testing Your Code
+<h3 name="anchor-sql">Testing Your Code</h3>
 
 1. In your Terminal window, run
 

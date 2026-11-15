@@ -8,7 +8,7 @@
 
 Now that you have checked that your Python scripts can connect to your local PostgreSQL database, you are ready to add some data. To start with, you can add one simple table with a single row, and check that Python can read the data that it has added.
 
-1. At the root of your `events_assistant` project folder, create a new file called `add_data.py`
+1. At the root of your `event_assistant` project folder, create a new file called `add_data.py`
 2. Give it the following script:
 
 ::: {.os .win}

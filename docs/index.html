@@ -61,7 +61,7 @@ respond with a useful answer.</p>
 concepts and has used a database before, but has not yet built a web
 server.</p>
 <h3 id="a-three-part-tutorial">A Three-Part Tutorial</h3>
-<p>This tutorial is in three parts:</p>
+<p>This tutorial is in four parts:</p>
 <ol type="1">
 <li>Create a basic proof-of-concept pipeline that works for limited
 input</li>
@@ -69,6 +69,8 @@ input</li>
 queries for the database</li>
 <li>Build a robust framework around the AI pipeline, improve accuracy
 and security</li>
+<li>Add all the features that end-users will expect from such an
+app.</li>
 </ol>
 <h3 id="toolchain">Toolchain</h3>
 <p>In building this first part of the project, you will be using the
@@ -135,7 +137,6 @@ SQL query</li>
 raw result</li>
 <li>Create a second script that simulates how an LLM could convert the
 raw result into a natural language answer</li>
-<li>Deploy this proof-of-concept server to a web host</li>
 </ol>
 </section>
 <!-- Work Environment -->
@@ -1154,7 +1155,7 @@ your local PostgreSQL database, you are ready to add some data. To start
 with, you can add one simple table with a single row, and check that
 Python can read the data that it has added.</p>
 <ol type="1">
-<li>At the root of your <code>events_assistant</code> project folder,
+<li>At the root of your <code>event_assistant</code> project folder,
 create a new file called <code>add_data.py</code></li>
 <li>Give it the following script:</li>
 </ol>
@@ -1392,7 +1393,7 @@ correct value for your system.</p>
 that your private data remains secret.</p>
 <h3 id="creating-a-.env-file">Creating a <code>.env</code> file</h3>
 <ol type="1">
-<li>At the root of your <code>events_assistant</code> project directory,
+<li>At the root of your <code>event_assistant</code> project directory,
 create a file named <code>.env</code></li>
 <li>Give it the following text…</li>
 </ol>
@@ -1428,7 +1429,7 @@ repository, where others might find it.</p>
 <h3 id="creating-a-config.py-script">Creating a <code>config.py</code>
 Script</h3>
 <ol type="1">
-<li>At the root of your <code>events_assistant</code> project directory,
+<li>At the root of your <code>event_assistant</code> project directory,
 create a file named <code>config.py</code></li>
 <li>Give it the following text…</li>
 </ol>
@@ -1640,7 +1641,9 @@ Because you explicitly designed the <code>request.query</code> to be
 “SELECT * FROM meetings”, these last two issues are not a problem here.
 For a production-ready server, you will need to deal with them.</p>
 </details>
-<h3 id="testing-your-code">Testing Your Code</h3>
+<h3 name="anchor-sql">
+Testing Your Code
+</h3>
 <ol type="1">
 <li>In your Terminal window, run</li>
 </ol>
@@ -1669,6 +1672,471 @@ particular, the server should never trust data sent from a client.</p>
 <p>In the next section, you will see how to send a natural language
 question instead of an SQL query. As you will see, this will simply
 displace the security problem; it will not solve it.</p>
+</details>
+</section>
+<!-- A Natural Prompt -->
+<section id="a-natural-prompt" aria-labelledby="a-natural-prompt" data-item="A Natural Prompt">
+<h2>
+<a href="#a-natural-prompt">A Natural Prompt</a>
+</h2>
+<p>In this section, you are going to cheat. You are going to pretend to
+call an LLM to convert a natural language question into SQL, but in
+fact, you will use a pre-defined look up table to return pre-defined SQL
+queries for pre-defined questions.</p>
+<p>Why?</p>
+<p>You will be building a working pipeline with all the necessary
+pieces. Later, you can modify the faked pieces to communicate with a
+real LLM, without altering the pipeline.</p>
+<h3 id="sending-natural-language-questions-from-the-client">Sending
+Natural Language Questions from the Client</h3>
+<p>First, you can modify the <code>public/index.html</code>,
+<code>public/assets/script.js</code> and
+<code>public/assets/styles.css</code> so that your browser client can
+send one of three pre-defined questions:</p>
+<ul>
+<li>find all meetings</li>
+<li>find ai meetings</li>
+<li>find meetings on friday</li>
+</ul>
+<h4 id="index.html">index.html</h4>
+<pre class="language-html line-numbers"><code class="language-html line-numbers"><i>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;link rel="stylesheet" href="assets/styles.css"&gt;
+  &lt;script defer src="assets/script.js"&gt;&lt;/script&gt;</i><b>
+  &lt;title&gt;Natural Language&lt;/title&gt;</b><i>
+&lt;/head&gt;
+&lt;body&gt;</i><b>
+  &lt;h3&gt;Natural Language Database Requests&lt;/h3&gt;
+  &lt;div id="buttons"&gt;
+    &lt;button
+      type="button"
+      id="find-all"
+      data-question="find all meetings"
+    &gt;
+      Find All Meetings
+    &lt;/button&gt;
+    &lt;button
+      type="button"
+      id="find-ai"
+      data-question="find ai meetings"
+    &gt;
+      Find AI Meetings
+    &lt;/button&gt;
+    &lt;button
+      type="button"
+      id="find-friday"
+      data-question="find meetings on friday"
+    &gt;
+      Find Friday Meetings
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;p id="question"&gt;&lt;/p&gt;
+  &lt;pre id="json"&gt;&lt;/pre&gt;
+  &lt;pre id="result"&gt;&lt;/pre&gt;</b><i>
+&lt;/body&gt;
+&lt;/html&gt;</i></code></pre>
+<h4 id="script.js-all-new">script.js (all new)</h4>
+<pre class="language-javascript line-numbers"><code class="language-javascript line-numbers">// Read data from the server
+const buttons    = document.getElementById("buttons")
+const questionP  = document.getElementById("question")
+const jsonP      = document.getElementById("json")
+const resultP    = document.getElementById("result")
+const endPoint = "/ask"
+
+buttons.addEventListener("click", treatQuery)
+
+function treatQuery({target}) {
+  const { question } = target.dataset
+  questionP.textContent = `Natural language question = "${question}"`
+  
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ question })
+  }
+  fetch(endPoint, options)
+  .then(response =&gt; response.json())
+  .then(displayResults)
+}
+
+function displayResults(results) {
+  jsonP.textContent =  JSON.stringify(results, null, '  ')
+  resultP.textContent = results.answer
+}</code></pre>
+<h4 id="styles.css">styles.css</h4>
+<pre class="language-css line-numbers"><code class="language-css line-numbers"><i>body {
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ddd;
+  background-color: #222;</i><b>
+  max-width: 800px;
+}
+
+h3 {
+  text-decoration: underline;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+#question {
+  margin: 0.25em;
+}
+
+#result {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}</b></code></pre>
+<details class="trouble">
+<summary>
+A Test Doomed To fail
+</summary>
+<p>You can restart your <code>main.py</code> server and then visit <a
+href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> after making
+these changes. However, if you click on any of the new buttons, the
+server will not know how to respond:</p>
+<figure>
+<img src="images/notAllowed.webp"
+alt="The server responds with Method Not Allowed" />
+<figcaption aria-hidden="true">The server responds with
+<code>Method Not Allowed</code></figcaption>
+</figure>
+<p>This is because the new client expects to find an endpoint like
+<code>post("/ask")</code>, and the server currently only provides
+<code>get("/treat-query")</code>. This mismatch is what generates the
+<code>{ detail: "Method Not Allowed" }</code> response.</p>
+</details>
+<h3 id="adding-a-fake_llm_in.py-to-simulate-a-call-to-an-llm">Adding a
+<code>fake_llm_in.py</code> to Simulate a Call to an LLM</h3>
+<ol type="1">
+<li>At the root of your <code>event_assistant</code> project directory,
+create a new file called <code>fake_llm.py</code></li>
+<li>Give it the following script.</li>
+</ol>
+<h4 id="fake_llm_in.py">fake_llm_in.py</h4>
+<pre class="language-python line-numbers"><code class="language-python line-numbers">"""
+A placeholder for the LLM. It takes a natural-language
+question and returns an SQL query. For now, the mapping is
+hard-coded; later, this module will call a real LLM and the
+rest of the system will not need to change.
+"""
+
+import asyncio
+
+
+# Hard-coded mapping from question to SQL.
+# Add entries as the tutorial introduces new questions.
+RESPONSES = {
+    "find all meetings": "SELECT id, title, location, start_time FROM meetings",
+    "find ai meetings": (
+        "SELECT id, title, location, start_time FROM meetings "
+        "WHERE title ILIKE '%AI%' OR title ILIKE '%LLM%'"
+    ),
+    "find meetings on friday": (
+        "SELECT id, title, location, start_time FROM meetings "
+        "WHERE EXTRACT(ISODOW FROM start_time) = 5"
+    ),
+}
+
+
+async def question_to_sql(question: str) -&gt; str:
+    """
+    Convert a natural-language question into a SQL query.
+
+    This is async so that the rest of the system is already
+    shaped for the real LLM call, which will be async. The
+    current implementation is synchronous (a dictionary
+    lookup) wrapped in asyncio.sleep(0) to make the async
+    behaviour explicit.
+    """
+    await asyncio.sleep(0) # simulate the await of a real network call
+
+    key = question.strip().lower()
+    if key in RESPONSES:
+        return RESPONSES[key]
+
+    # A predictable fallback, so the endpoint always returns something.
+    return "SELECT id, title, location, start_time FROM meetings"</code></pre>
+<p>This script is fully commented, so that you can understand how it
+cheats. It does not call an LLM; it simply choose an SQL query from a
+pre-determined list, or returns a generic SQL query if the incoming
+question does not match anything in its look-up list.</p>
+<h3 id="adapting-main.py-to-use-fake_llm_in.py">Adapting
+<code>main.py</code> to Use <code>fake_llm_in.py</code></h3>
+<p>You now need to update <code>main.py</code> so that it: * Imports the
+<code>question_to_sql()</code> function from <code>fake_llm_in.py</code>
+* Responds to POST requests for <code>"/ask"</code> * Reads in the value
+of <code>question</code> from the parsed data it receives from the
+client * Makes an interim request to <code>fake_llm_in.py</code> to
+retrieve an SQL query that matches the question * Run this fake AI SQL
+instead of the <code>{ query }</code> it used to receive</p>
+<p>Here are the changes you can make:</p>
+<h4 id="main.py">main.py</h4>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+import psycopg2
+from pydantic import BaseModel
+from config import settings</i><b>
+
+from fake_llm_in import question_to_sql</b><i>
+
+app = FastAPI()</i><b>
+
+class AskRequest(BaseModel):
+    question: str
+
+
+@app.post("/ask")
+async def ask(request: AskRequest):
+    # 1. Translate the question into SQL (placeholder for now).
+    sql = await question_to_sql(request.question)
+    print(f"[ask] sql: {sql}")
+
+    # 2. Execute the SQL. NOTE: SQL IS UNTRUSTWORTHY.</b><i>
+    conn = psycopg2.connect(
+        dbname=settings.db_name,
+        user=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port
+    )
+    try:
+        cur = conn.cursor()</i><b>
+        cur.execute(sql)</b><i>
+        rows = cur.fetchall()
+        
+        return [
+           {"id": r[0], "title": r[1], "location": r[2], "start_time": r[3].isoformat()}
+           for r in rows
+        ]
+    finally:
+        cur.close()
+        conn.close()
+
+app.mount("/", StaticFiles(directory=Path("public"), html=True))</i></code></pre>
+<h3 id="displaying-the-raw-output-from-the-database">Displaying the Raw
+Output from the Database</h3>
+<p>Now, when you click on a button in the browser client, you see the
+same kind of response as you saw in <button data-name="anchor-sql">the
+previous section</button>.</p>
+<figure>
+<img src="images/naturalRaw.webp"
+alt="A natural language question results in raw data in response" />
+<figcaption aria-hidden="true">A natural language question results in
+raw data in response</figcaption>
+</figure>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>In this section, you’ve seen how to:</p>
+<ol type="1">
+<li>Send a natural language prompt like “find all meetings”, instead of
+crafted SQL query. This means that people with no experience of SQL will
+be able to use the system.</li>
+<li>Use a placeholder script to pretend to call an LLM to convert the
+natural prompt to SQL</li>
+<li>Return the raw result of the fake AI SQL</li>
+</ol>
+<p>An everyday user may have difficulty in interpreting the meanin of
+the raw data that is returned. In the next section, you’ll add a second
+faked LLM request, to convert the raw data into a meaning natural
+language response.</p>
+</details>
+</section>
+<!-- A Natural Answer -->
+<section id="a-natural-answer" aria-labelledby="a-natural-answer" data-item="A Natural Answer">
+<h2>
+<a href="#a-natural-answer">A Natural Answer</a>
+</h2>
+<p>To convert the raw output of the SQL query into a natural answer, you
+can use a template. The process is very similar to what you did in the
+last section, but here it acts in reverse:</p>
+<p>Here’s a second script that fakes what an LLM’s response might
+be.</p>
+<ol type="1">
+<li>At the root of your <code>event_assistant</code> project directory,
+create a file named <code>fake_llm_out.py</code></li>
+<li>Give it the following script:</li>
+</ol>
+<pre class="language-python line-numbers"><code class="language-python line-numbers">"""
+fake_llm_out.py
+
+A placeholder for the output side of the LLM. It takes the
+original question and the rows returned by the database, and
+produces a natural-language answer. For now, the sentences are
+built from a template; later, this module will call a real LLM
+and the rest of the system will not need to change.
+"""
+
+import asyncio
+from datetime import datetime
+
+
+def _relative_date(start: datetime, now: datetime) -&gt; str:
+    """Return a human phrase for the date, computed deterministically."""
+    days = (start.date() - now.date()).days
+    if days == 0:
+        return "today"
+    if days == 1:
+        return "tomorrow"
+    if days == 2:
+        return "the day after tomorrow"
+    if 0 &lt; days &lt; 7:
+        return f"this coming {start.strftime('%A')}"
+    return start.strftime("%A, %B %d")
+
+
+def _format_time(start: datetime) -&gt; str:
+    """Return a 12-hour time like '7 p.m.' from a 24-hour timestamp."""
+    hour = start.hour % 12 or 12
+    suffix = "a.m." if start.hour &lt; 12 else "p.m."
+    if start.minute:
+        return f"{hour}:{start.minute:02d} {suffix}"
+    return f"{hour} {suffix}"
+
+
+async def rows_to_answer(question: str, rows: list[dict]) -&gt; str:
+    """
+    Convert a question and its result rows into a natural-language
+    answer.
+
+    This is async so that the real LLM call can replace the body
+    without changing the caller. The current implementation is a
+    deterministic template.
+
+    NOTE that `question` is not used here, but it will be sent as
+    part of the prompt to a real LLM, to help it formulate an
+    answer that best matches the original question.
+    """
+    await asyncio.sleep(0) # simulate the await of a real network call
+
+    if not rows:
+        return "I could not find any meetings matching that request."
+
+    now = datetime.now()
+    sentences = []
+    for row in rows:
+        start = datetime.fromisoformat(row["start_time"])
+        sentences.append(
+            f'The meeting "{row["title"]}" will take place at '
+            f'{row["location"]} {_relative_date(start, now)} '
+            f'at {_format_time(start)}'
+        )
+
+    if len(sentences) == 1:
+        return sentences[0]
+    return "Here are the meetings I found:\n\n" + "\n".join(
+        f"- {s}" for s in sentences
+    )</code></pre>
+<h3 id="updating-main.py-to-use-fake_llm_out.py">Updating
+<code>main.py</code> to Use <code>fake_llm_out.py</code></h3>
+<ol type="1">
+<li>Make the following changes to <code>main.py</code>, so that it
+inserts <code>fake_llm_out.py</code> into the pipeline:</li>
+</ol>
+<pre class="language-python line-numbers"><code class="language-python line-numbers"><i>from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+import psycopg2
+from pydantic import BaseModel
+from config import settings
+
+from fake_llm_in import question_to_sql</i><b>
+from fake_llm_out import rows_to_answer</b><i>
+
+app = FastAPI()
+
+class AskRequest(BaseModel):
+    question: str
+
+
+@app.post("/ask")
+async def ask(request: AskRequest):
+    # 1. Translate the question into SQL (placeholder for now).
+    sql = await question_to_sql(request.question)
+    print(f"[ask] sql: {sql}")
+
+    # 2. Execute the SQL. NOTE: SQL IS UNTRUSTWORTHY.
+    conn = psycopg2.connect(
+        dbname=settings.db_name,
+        user=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port
+    )
+
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)</i><b>
+        raw_rows = cur.fetchall()
+        rows = [
+            {"id": r[0], "title": r[1], "location": r[2],
+             "start_time": r[3].isoformat()}
+            for r in raw_rows
+        ]</b><i>
+    finally:
+        cur.close()
+        conn.close()</i><b>
+
+    # 3. Convert the rows into a natural-language answer
+    #    (placeholder for now).
+    answer = await rows_to_answer(request.question, rows)
+    print(f"[ask] answer: {answer}")
+
+    return {
+        "question": request.question,
+        "sql": sql,
+        "rows": rows,
+        "answer": answer,
+    }</b><i>
+
+
+app.mount("/", StaticFiles(directory=Path("public"), html=True))</i></code></pre>
+<h3 id="testing-your-fake-llms">Testing Your Fake LLMs</h3>
+<p>Now, when you click on one of the buttons in your browser client, the
+server generates a comprehensive response which includes a natural
+language answer. The screenshot below shows natural answer as well as
+the entire response sent by the server. In a production app, there
+should be no need to show the entire response: just the natural answer
+should do.</p>
+<figure>
+<img src="images/allNatural.webp"
+alt="A natural answer to a natural question" />
+<figcaption aria-hidden="true">A natural answer to a natural
+question</figcaption>
+</figure>
+<details class="pivot" open>
+<summary>
+What You’ve Just Learned
+</summary>
+<p>In this section, you added a second LLM simulator into the pipeline,
+using principles that you have already seen. A question in natural
+language now receives a reply in natural language.</p>
+<p>This proof-of-concept demonstrates the main steps needed to allow
+everyday users to get meaningful answers through an AI-assisted
+database.</p>
+<p>Your next steps will be:</p>
+<ul>
+<li>To integrate a real LLM into the pipeline</li>
+<li>Handle the issues that arise when the LLM hallucinates or provides
+unsafe answers</li>
+<li>Expand the service provided to include all the features that
+end-user and meeting organizers will require.</li>
+</ul>
+<p><strong>Congratulations on finishing the first part of this four-part
+tutorial!</strong></p>
 </details>
 </section>
 
