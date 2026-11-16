@@ -28,4 +28,6 @@
   
 ### Notes about collaboration
 This project was designed to give you something to talk about with others. The more people know about your goals and your progress, the more likely you will be to find someone who can help you to develop your career.
+
+Telling people what you are working on encourages you to keep working on it. Even if you do not take the project all the way to its logical conclusion, the way you talk about it with others can have positive side effects.
 </section>
